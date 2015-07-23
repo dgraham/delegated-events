@@ -1,3 +1,6 @@
 [submodule "vendor/selector-set"]
 	path = vendor/selector-set
 	url = https://github.com/josh/selector-set
+[submodule "vendor/mocha"]
+	path = vendor/mocha
+	url = https://github.com/mochajs/mocha
