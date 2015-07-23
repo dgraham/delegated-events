@@ -1,6 +1,6 @@
 (function() {
   const events = new Map();
-  const stopped = new WeakMap();
+  const immediatePropagationStopped = new WeakMap();
 
   function before(subject, verb, fn) {
     const source = subject[verb];
@@ -11,11 +11,15 @@
     return subject;
   }
 
+  function trackImmediate() {
+    immediatePropagationStopped.set(this, true);
+  }
+
   function dispatch(observers, event) {
-    before(event, 'stopImmediatePropagation', stopped.set.bind(stopped, event));
+    before(event, 'stopImmediatePropagation', trackImmediate);
     const matches = observers.matches(event.target);
     for (var i = 0, length = matches.length; i < length; i++) {
-      if (stopped.has(event)) break;
+      if (immediatePropagationStopped.has(event)) break;
       matches[i].data.call(event.target, event);
     }
   }
