@@ -40,6 +40,16 @@ describe('delegated event listeners', function() {
     $.fire(document.body, 'test:event', {id: 42, login: 'hubot'});
   });
 
+  it('stops immediate propagation', function() {
+    const one = function(event) { event.stopImmediatePropagation(); };
+    const two = function(event) { assert.fail(); };
+    $.on('test:event', '*', one);
+    $.on('test:event', '*', two);
+    $.fire(document.body, 'test:event');
+    $.off('test:event', '*', one);
+    $.off('test:event', '*', two);
+  });
+
   it('removes event observers', function() {
     const observer = function() { assert.fail(); };
     $.on('test:event', '*', observer);
