@@ -6,13 +6,13 @@
     const source = subject[verb];
     subject[verb] = function() {
       fn.apply(subject, arguments);
-      return source.apply(event, arguments);
+      return source.apply(subject, arguments);
     };
     return subject;
   }
 
   function dispatch(observers, event) {
-    before(event, event.stopImmediatePropagation, stopped.set.bind(stopped, event));
+    before(event, 'stopImmediatePropagation', stopped.set.bind(stopped, event));
     const matches = observers.matches(event.target);
     for (var i = 0, length = matches.length; i < length; i++) {
       if (stopped.has(event)) break;
