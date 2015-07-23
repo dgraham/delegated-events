@@ -4,3 +4,6 @@
 [submodule "vendor/mocha"]
 	path = vendor/mocha
 	url = https://github.com/mochajs/mocha
+[submodule "vendor/chai"]
+	path = vendor/chai
+	url = https://github.com/chaijs/chai
