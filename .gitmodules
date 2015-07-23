@@ -1,0 +1,3 @@
+[submodule "vendor/selector-set"]
+	path = vendor/selector-set
+	url = https://github.com/josh/selector-set
