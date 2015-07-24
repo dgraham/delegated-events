@@ -39,7 +39,7 @@
     before(event, 'stopPropagation', trackPropagation);
     before(event, 'stopImmediatePropagation', trackImmediate);
 
-    var queue = matches(selectors, event.target);
+    const queue = matches(selectors, event.target);
     for (var i = 0, len1 = queue.length; i < len1; i++) {
       if (propagationStopped.has(event)) break;
       var matched = queue[i];
