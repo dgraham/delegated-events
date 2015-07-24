@@ -25,6 +25,20 @@ describe('delegated event listeners', function() {
       document.addEventListener('test:event', observer);
       $.fire(document.body, 'test:event');
     });
+
+    it('returns canceled when default prevented', function() {
+      const observer = function(event) { event.preventDefault(); };
+      document.addEventListener('test:event', observer);
+      const canceled = !$.fire(document.body, 'test:event');
+      assert.equal(canceled, true);
+    });
+
+    it('returns not canceled when default is not prevented', function(done) {
+      const observer = function(event) { assert.ok(event); done(); };
+      document.addEventListener('test:event', observer);
+      const canceled = !$.fire(document.body, 'test:event');
+      assert.equal(canceled, false);
+    });
   });
 
   describe('registering event observers', function() {
