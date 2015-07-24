@@ -1,60 +1,55 @@
 describe('delegated event listeners', function() {
-  it('fires custom events', function(done) {
-    const observer = function(event) {
-      document.removeEventListener('test:event', observer);
-      assert(event.bubbles);
-      assert(event.cancelable);
-      assert.equal(event.type, 'test:event');
-      assert.deepEqual(event.detail, {id: 42, login: 'hubot'});
-      assert.strictEqual(document.body, event.target);
-      assert.instanceOf(event, CustomEvent);
-      done();
-    };
-    document.addEventListener('test:event', observer);
-    $.fire(document.body, 'test:event', {id: 42, login: 'hubot'});
+  describe('firing custom events', function() {
+    it('fires custom events with detail', function(done) {
+      const observer = function(event) {
+        document.removeEventListener('test:event', observer);
+        assert(event.bubbles);
+        assert(event.cancelable);
+        assert.equal(event.type, 'test:event');
+        assert.deepEqual(event.detail, {id: 42, login: 'hubot'});
+        assert.strictEqual(document.body, event.target);
+        assert.instanceOf(event, CustomEvent);
+        done();
+      };
+      document.addEventListener('test:event', observer);
+      $.fire(document.body, 'test:event', {id: 42, login: 'hubot'});
+    });
+
+    it('fires custom events without detail', function(done) {
+      const observer = function(event) {
+        document.removeEventListener('test:event', observer);
+        assert.isUndefined(event.detail);
+        assert.instanceOf(event, CustomEvent);
+        done();
+      };
+      document.addEventListener('test:event', observer);
+      $.fire(document.body, 'test:event');
+    });
   });
 
-  it('fires custom events without detail', function(done) {
-    const observer = function(event) {
-      document.removeEventListener('test:event', observer);
-      assert.isUndefined(event.detail);
-      assert.instanceOf(event, CustomEvent);
-      done();
-    };
-    document.addEventListener('test:event', observer);
-    $.fire(document.body, 'test:event');
-  });
+  describe('registering event observers', function() {
+    it('observes custom events', function(done) {
+      const observer = function(event) {
+        $.off('test:event', '*', observer);
+        assert(event.bubbles);
+        assert(event.cancelable);
+        assert.equal(event.type, 'test:event');
+        assert.deepEqual({id: 42, login: 'hubot'}, event.detail);
+        assert.strictEqual(document.body, event.target);
+        assert.strictEqual(document.body, this);
+        assert.instanceOf(event, CustomEvent);
+        done();
+      };
+      $.on('test:event', '*', observer);
+      $.fire(document.body, 'test:event', {id: 42, login: 'hubot'});
+    });
 
-  it('observes custom events', function(done) {
-    const observer = function(event) {
+    it('removes event observers', function() {
+      const observer = function() { assert.fail(); };
+      $.on('test:event', '*', observer);
       $.off('test:event', '*', observer);
-      assert(event.bubbles);
-      assert(event.cancelable);
-      assert.equal(event.type, 'test:event');
-      assert.deepEqual({id: 42, login: 'hubot'}, event.detail);
-      assert.strictEqual(document.body, event.target);
-      assert.instanceOf(event, CustomEvent);
-      done();
-    };
-    $.on('test:event', '*', observer);
-    $.fire(document.body, 'test:event', {id: 42, login: 'hubot'});
-  });
-
-  it('stops immediate propagation', function() {
-    const one = function(event) { event.stopImmediatePropagation(); };
-    const two = function(event) { assert.fail(); };
-    $.on('test:event', '*', one);
-    $.on('test:event', '*', two);
-    $.fire(document.body, 'test:event');
-    $.off('test:event', '*', one);
-    $.off('test:event', '*', two);
-  });
-
-  it('removes event observers', function() {
-    const observer = function() { assert.fail(); };
-    $.on('test:event', '*', observer);
-    $.off('test:event', '*', observer);
-    $.fire(document.body, 'test:event');
+      $.fire(document.body, 'test:event');
+    });
   });
 
   describe('event propagation', function() {
@@ -94,6 +89,16 @@ describe('delegated event listeners', function() {
       $.on('test:event', '.js-test-child', two);
       $.fire(this.child, 'test:event');
       $.off('test:event', '.js-test-parent', one);
+      $.off('test:event', '.js-test-child', two);
+    });
+
+    it('stops immediate propagation', function() {
+      const one = function(event) { event.stopImmediatePropagation(); };
+      const two = function(event) { assert.fail(); };
+      $.on('test:event', '.js-test-child', one);
+      $.on('test:event', '.js-test-child', two);
+      $.fire(this.child, 'test:event');
+      $.off('test:event', '.js-test-child', one);
       $.off('test:event', '.js-test-child', two);
     });
   });
