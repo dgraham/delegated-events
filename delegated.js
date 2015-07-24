@@ -20,7 +20,7 @@
       if (node.nodeType !== 1) break;
       var matches = selectors.matches(node);
       if (matches.length) {
-        queue.push({node: node, handlers: matches});
+        queue.push({node: node, observers: matches});
       }
     } while (node = node.parentElement);
 
@@ -44,27 +44,27 @@
       if (propagationStopped.has(event)) break;
       var matched = queue[i];
 
-      for (var j = 0, len2 = matched.handlers.length; j < len2; j++) {
+      for (var j = 0, len2 = matched.observers.length; j < len2; j++) {
         if (immediatePropagationStopped.has(event)) break;
-        matched.handlers[j].data.call(matched.node, event);
+        matched.observers[j].data.call(matched.node, event);
       }
     }
   }
 
   this.on = function(name, selector, fn) {
-    var observers = events.get(name);
-    if (!observers) {
-      observers = new SelectorSet();
-      events.set(name, observers);
-      document.addEventListener(name, dispatch.bind(null, observers), false);
+    var selectors = events.get(name);
+    if (!selectors) {
+      selectors = new SelectorSet();
+      events.set(name, selectors);
+      document.addEventListener(name, dispatch.bind(null, selectors), false);
     }
-    observers.add(selector, fn);
+    selectors.add(selector, fn);
   };
 
   this.off = function(name, selector, fn) {
-    const observers = events.get(name);
-    if (observers) {
-      observers.remove(selector, fn);
+    const selectors = events.get(name);
+    if (selectors) {
+      selectors.remove(selector, fn);
     }
   };
 
