@@ -18,7 +18,7 @@ describe('delegated event listeners', function() {
     it('fires custom events without detail', function(done) {
       const observer = function(event) {
         document.removeEventListener('test:event', observer);
-        assert.isUndefined(event.detail);
+        assert(event.detail === undefined || event.detail === null);
         assert.instanceOf(event, CustomEvent);
         done();
       };
