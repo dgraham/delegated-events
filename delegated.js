@@ -1,5 +1,6 @@
 (function() {
   const events = new Map();
+  const propagationStopped = new WeakMap();
   const immediatePropagationStopped = new WeakMap();
 
   function before(subject, verb, fn) {
@@ -11,16 +12,42 @@
     return subject;
   }
 
+  function matches(selectors, target) {
+    var queue = [];
+    var node = target;
+
+    do {
+      if (node.nodeType !== 1) break;
+      var matches = selectors.matches(node);
+      if (matches.length) {
+        queue.push({node: node, handlers: matches});
+      }
+    } while (node = node.parentElement);
+
+    return queue;
+  }
+
+  function trackPropagation() {
+    propagationStopped.set(this, true);
+  }
+
   function trackImmediate() {
     immediatePropagationStopped.set(this, true);
   }
 
-  function dispatch(observers, event) {
+  function dispatch(selectors, event) {
+    before(event, 'stopPropagation', trackPropagation);
     before(event, 'stopImmediatePropagation', trackImmediate);
-    const matches = observers.matches(event.target);
-    for (var i = 0, length = matches.length; i < length; i++) {
-      if (immediatePropagationStopped.has(event)) break;
-      matches[i].data.call(event.target, event);
+
+    var queue = matches(selectors, event.target);
+    for (var i = 0, len1 = queue.length; i < len1; i++) {
+      if (propagationStopped.has(event)) break;
+      var matched = queue[i];
+
+      for (var j = 0, len2 = matched.handlers.length; j < len2; j++) {
+        if (immediatePropagationStopped.has(event)) break;
+        matched.handlers[j].data.call(matched.node, event);
+      }
     }
   }
 

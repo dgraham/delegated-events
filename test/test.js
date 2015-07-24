@@ -56,4 +56,45 @@ describe('delegated event listeners', function() {
     $.off('test:event', '*', observer);
     $.fire(document.body, 'test:event');
   });
+
+  describe('event propagation', function() {
+    before(function() {
+      this.parent = document.querySelector('.js-test-parent');
+      this.child = document.querySelector('.js-test-child');
+    });
+
+    it('fires observers in tree order', function() {
+      const order = [];
+
+      const parent = this.parent;
+      const one = function(event) {
+        assert.strictEqual(this, parent);
+        order.push(1);
+      };
+
+      const child = this.child;
+      const two = function(event) {
+        assert.strictEqual(this, child);
+        order.push(2);
+      };
+
+      $.on('test:event', '.js-test-parent', one);
+      $.on('test:event', '.js-test-child', two);
+      $.fire(this.child, 'test:event');
+      $.off('test:event', '.js-test-parent', one);
+      $.off('test:event', '.js-test-child', two);
+
+      assert.deepEqual([2, 1], order);
+    });
+
+    it('stops propagation bubbling to parent', function() {
+      const one = function(event) { assert.fail(); };
+      const two = function(event) { event.stopPropagation(); };
+      $.on('test:event', '.js-test-parent', one);
+      $.on('test:event', '.js-test-child', two);
+      $.fire(this.child, 'test:event');
+      $.off('test:event', '.js-test-parent', one);
+      $.off('test:event', '.js-test-child', two);
+    });
+  });
 });
