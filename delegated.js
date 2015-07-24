@@ -35,10 +35,11 @@
     immediatePropagationStopped.set(this, true);
   }
 
-  function dispatch(selectors, event) {
+  function dispatch(event) {
     before(event, 'stopPropagation', trackPropagation);
     before(event, 'stopImmediatePropagation', trackImmediate);
 
+    const selectors = events.get(event.type);
     const queue = matches(selectors, event.target);
     for (var i = 0, len1 = queue.length; i < len1; i++) {
       if (propagationStopped.has(event)) break;
@@ -57,7 +58,7 @@
     if (!selectors) {
       selectors = new SelectorSet();
       events.set(name, selectors);
-      document.addEventListener(name, dispatch.bind(null, selectors), false);
+      document.addEventListener(name, dispatch, false);
     }
     selectors.add(selector, fn);
   };
