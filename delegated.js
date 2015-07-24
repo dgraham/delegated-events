@@ -48,6 +48,7 @@
         if (immediatePropagationStopped.has(event)) break;
         matched.observers[j].data.call(matched.node, event);
       }
+      immediatePropagationStopped.delete(event);
     }
   }
 

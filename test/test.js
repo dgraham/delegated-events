@@ -101,5 +101,15 @@ describe('delegated event listeners', function() {
       $.off('test:event', '.js-test-child', one);
       $.off('test:event', '.js-test-child', two);
     });
+
+    it('stops immediate propagation but not bubbling', function(done) {
+      const one = function(event) { assert.ok(event); done(); };
+      const two = function(event) { event.stopImmediatePropagation(); };
+      $.on('test:event', '.js-test-parent', one);
+      $.on('test:event', '.js-test-child', two);
+      $.fire(this.child, 'test:event');
+      $.off('test:event', '.js-test-parent', one);
+      $.off('test:event', '.js-test-child', two);
+    });
   });
 });
