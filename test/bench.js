@@ -24,6 +24,7 @@
 
   function native(selector) {
     return {
+      name: 'native',
       handler: function(event) {
         if (event.target.matches(selector)) {
           if (event.type !== 'test:bench') {
@@ -42,6 +43,7 @@
 
   function delegated(selector) {
     return {
+      name: 'delegated',
       handler: function(event) {
         if (event.type !== 'test:bench') {
           console.log('test');
@@ -58,6 +60,7 @@
 
   function jquery(selector) {
     return {
+      name: 'jQuery',
       handler: function(event) {
         if (event.type !== 'test:bench') {
           console.log('test');
@@ -74,6 +77,7 @@
 
   function jqueryss(selector) {
     return {
+      name: 'jQuery + SelectorSet',
       setup: function() {
         return new Promise(function(resolve) {
           const script = document.createElement('script');
@@ -165,7 +169,7 @@
       handlers.forEach(harness.on);
       var duration = benchmark(dispatch, last);
       handlers.forEach(harness.off);
-      return {name: test.name, value: duration};
+      return {name: harness.name, value: duration};
     });
   });
   Promise.all(results).then(report);
