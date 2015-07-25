@@ -84,10 +84,43 @@
     }
   }
 
-  function report(name, value) {
-    const el = document.createElement('div');
-    el.textContent = name + ' = ' + value;
-    document.body.appendChild(el);
+  function report(results) {
+    const colors = '#54c7fc #ffcd00 #ff9600 #ff2851 #0076ff #44db5e #ff3824 #8e8e93'.split(' ');
+
+    const max = results.reduce(function(a, b) {
+      return a.value > b.value ? a : b;
+    });
+
+    results = results.map(function(result, ix) {
+      var percent = 100 * result.value / max.value;
+      return {
+        name: result.name,
+        value: result.value,
+        percent: Math.ceil(percent * 10) / 10,
+        color: colors[ix]
+      };
+    });
+
+    const svg = document.querySelector('.js-results');
+    const ns = 'http://www.w3.org/2000/svg';
+    results.forEach(function(result, ix) {
+      var row = document.createElementNS(ns, 'rect');
+      row.setAttribute('fill', result.color);
+      row.setAttribute('width', result.percent + '%');
+      row.setAttribute('height', 60);
+
+      var text = document.createElementNS(ns, 'text');
+      text.textContent = result.name + ': ' + result.value + 'ms ' + result.percent + '%';
+      text.setAttribute('x', 10);
+      text.setAttribute('y', 35);
+
+      var group = document.createElementNS(ns, 'g');
+      group.setAttribute('transform', 'translate(0, ' + 60 * ix + ')');
+
+      group.appendChild(row);
+      group.appendChild(text);
+      svg.appendChild(group);
+    });
   }
 
   function benchmark() {
@@ -100,12 +133,14 @@
 
   const last = build();
   const selector = '.' + last.className;
-  [native, delegated, jquery].forEach(function(test) {
+  const results = [native, delegated, jquery].map(function(test) {
     var harness = test(selector);
     var handlers = observers(harness.handler);
     handlers.forEach(harness.on);
     var duration = benchmark(dispatch, last);
     handlers.forEach(harness.off);
-    report(test.name, duration);
+    return {name: test.name, value: duration};
   });
+
+  report(results);
 })();
