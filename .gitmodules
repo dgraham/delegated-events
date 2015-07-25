@@ -7,3 +7,6 @@
 [submodule "vendor/chai"]
 	path = vendor/chai
 	url = https://github.com/chaijs/chai
+[submodule "vendor/jquery-selector-set"]
+	path = vendor/jquery-selector-set
+	url = https://github.com/josh/jquery-selector-set
