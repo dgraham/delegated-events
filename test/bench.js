@@ -72,6 +72,30 @@
     };
   }
 
+  function jqueryss(selector) {
+    return {
+      setup: function() {
+        return new Promise(function(resolve) {
+          const script = document.createElement('script');
+          script.addEventListener('load', resolve);
+          script.src = '../vendor/jquery-selector-set/jquery.selector-set.js';
+          document.head.appendChild(script);
+        });
+      },
+      handler: function(event) {
+        if (event.type !== 'test:bench') {
+          console.log('test');
+        }
+      },
+      on: function(fn) {
+        $(document).on('test:bench', selector, fn);
+      },
+      off: function(fn) {
+        $(document).off('test:bench', selector, fn);
+      }
+    };
+  }
+
   function dispatch(node) {
     for (var i = 0; i < DISPATCHES; i++) {
       node.dispatchEvent(
@@ -133,14 +157,16 @@
 
   const last = build();
   const selector = '.' + last.className;
-  const results = [native, delegated, jquery].map(function(test) {
+  const results = [native, delegated, jquery, jqueryss].map(function(test) {
     var harness = test(selector);
-    var handlers = observers(harness.handler);
-    handlers.forEach(harness.on);
-    var duration = benchmark(dispatch, last);
-    handlers.forEach(harness.off);
-    return {name: test.name, value: duration};
+    var ready = harness.setup ? harness.setup() : Promise.resolve();
+    return ready.then(function() {
+      var handlers = observers(harness.handler);
+      handlers.forEach(harness.on);
+      var duration = benchmark(dispatch, last);
+      handlers.forEach(harness.off);
+      return {name: test.name, value: duration};
+    });
   });
-
-  report(results);
+  Promise.all(results).then(report);
 })();
