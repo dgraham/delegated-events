@@ -1,7 +1,7 @@
 (function() {
   const DEPTH = 25;
   const OBSERVERS = 100;
-  const DISPATCHES = 2500;
+  const DISPATCHES = 1500;
 
   function build() {
     var parent = document.body;
