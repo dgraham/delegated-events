@@ -4,78 +4,75 @@
   const DISPATCHES = 1500;
 
   function build(depth) {
+    var selectors = [];
     var parent = document.body;
     for (var i = 0; i < depth; i++) {
+      var name = 'js-div-' + i;
+      selectors.push('.' + name);
       var child = document.createElement('div');
-      child.classList.add('js-div-' + i);
+      child.classList.add(name);
       parent.appendChild(child);
       parent = child;
     }
-    return parent;
+    return selectors;
   }
 
-  function observers(fn) {
-    const observers = [];
-    for (var i = 0; i < OBSERVERS; i++) {
-      observers.push(fn.bind(null));
+  function handler(event) {
+    if (event.type !== 'test:bench') {
+      console.log('test');
     }
-    return observers;
   }
 
-  function native(selector) {
+  function matchHandler(event) {
+    if (event.target.matches(this)) {
+      if (event.type !== 'test:bench') {
+        console.log('test');
+      }
+    }
+  }
+
+  function native() {
+    const handlers = new Map();
     return {
       name: 'native',
-      handler: function(event) {
-        if (event.target.matches(selector)) {
-          if (event.type !== 'test:bench') {
-            console.log('test');
-          }
-        }
+      on: function(selector) {
+        const clone = matchHandler.bind(selector);
+        handlers.set(selector, clone);
+        document.addEventListener('test:bench', clone);
       },
-      on: function(fn) {
-        document.addEventListener('test:bench', fn);
+      off: function(selector) {
+        const handler = handlers.get(selector);
+        handlers.delete(selector);
+        document.removeEventListener('test:bench', handler);
       },
-      off: function(fn) {
-        document.removeEventListener('test:bench', fn);
-      }
     };
   }
 
-  function delegated(selector) {
+  function delegated() {
     return {
       name: 'delegated',
-      handler: function(event) {
-        if (event.type !== 'test:bench') {
-          console.log('test');
-        }
+      on: function(selector) {
+        $.on('test:bench', selector, handler);
       },
-      on: function(fn) {
-        $.on('test:bench', selector, fn);
-      },
-      off: function(fn) {
-        $.off('test:bench', selector, fn);
+      off: function(selector) {
+        $.off('test:bench', selector, handler);
       }
     };
   }
 
-  function jquery(selector) {
+  function jquery() {
     return {
       name: 'jQuery',
-      handler: function(event) {
-        if (event.type !== 'test:bench') {
-          console.log('test');
-        }
+      on: function(selector) {
+        $(document).on('test:bench', selector, handler);
       },
-      on: function(fn) {
-        $(document).on('test:bench', selector, fn);
-      },
-      off: function(fn) {
-        $(document).off('test:bench', selector, fn);
+      off: function(selector) {
+        $(document).off('test:bench', selector, handler);
       }
     };
   }
 
-  function jqueryss(selector) {
+  function jqueryss() {
     return {
       name: 'jQuery + SelectorSet',
       setup: function() {
@@ -86,16 +83,11 @@
           document.head.appendChild(script);
         });
       },
-      handler: function(event) {
-        if (event.type !== 'test:bench') {
-          console.log('test');
-        }
+      on: function(selector) {
+        $(document).on('test:bench', selector, handler);
       },
-      on: function(fn) {
-        $(document).on('test:bench', selector, fn);
-      },
-      off: function(fn) {
-        $(document).off('test:bench', selector, fn);
+      off: function(selector) {
+        $(document).off('test:bench', selector, handler);
       }
     };
   }
@@ -162,16 +154,15 @@
   }
 
   function run() {
-    const last = build(DEPTH);
-    const selector = '.' + last.className;
+    const selectors = build(DEPTH);
+    const deepest = document.querySelector(selectors[selectors.length - 1]);
     const results = [native, delegated, jquery, jqueryss].map(function(test) {
-      var harness = test(selector);
+      var harness = test();
       var ready = harness.setup ? harness.setup() : Promise.resolve();
       return ready.then(function() {
-        var handlers = observers(harness.handler);
-        handlers.forEach(harness.on);
-        var duration = benchmark(dispatch, last);
-        handlers.forEach(harness.off);
+        selectors.forEach(harness.on);
+        var duration = benchmark(dispatch, deepest);
+        selectors.forEach(harness.off);
         return {name: harness.name, value: duration};
       });
     });
