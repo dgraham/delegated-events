@@ -127,6 +127,8 @@
         percent: Math.ceil(percent * 10) / 10,
         color: colors[ix]
       };
+    }).sort(function(a, b) {
+      return a.value < b.value ? -1 : 1;
     });
 
     const svg = document.querySelector('.js-results');
