@@ -148,7 +148,7 @@ layer of event handling to recover performance.
 
 ### Performance
 
-The delegated event system is written in [vanilla JavaScript](delegated.js),
+The delegated event system is written in [vanilla JavaScript](delegated-events.js),
 so it won't significantly increase download times (minified + gzip = 640 bytes).
 It relies on a small [`SelectorSet`](https://github.com/josh/selector-set)
 data structure to optimize selector matching against the delegated events.
