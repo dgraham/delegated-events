@@ -1,5 +1,5 @@
 (function() {
-  const events = new Map();
+  const events = {};
   const propagationStopped = new WeakMap();
   const immediatePropagationStopped = new WeakMap();
 
@@ -39,7 +39,7 @@
     before(event, 'stopPropagation', trackPropagation);
     before(event, 'stopImmediatePropagation', trackImmediate);
 
-    const selectors = events.get(event.type);
+    const selectors = events[event.type];
     const queue = matches(selectors, event.target);
     for (var i = 0, len1 = queue.length; i < len1; i++) {
       if (propagationStopped.has(event)) break;
@@ -54,17 +54,17 @@
   }
 
   this.on = function(name, selector, fn) {
-    var selectors = events.get(name);
+    var selectors = events[name];
     if (!selectors) {
       selectors = new SelectorSet();
-      events.set(name, selectors);
+      events[name] = selectors;
       document.addEventListener(name, dispatch, false);
     }
     selectors.add(selector, fn);
   };
 
   this.off = function(name, selector, fn) {
-    const selectors = events.get(name);
+    const selectors = events[name];
     if (selectors) {
       selectors.remove(selector, fn);
     }
