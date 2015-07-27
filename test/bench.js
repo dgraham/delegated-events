@@ -3,9 +3,9 @@
   const OBSERVERS = 100;
   const DISPATCHES = 1500;
 
-  function build() {
+  function build(depth) {
     var parent = document.body;
-    for (var i = 0; i < DEPTH; i++) {
+    for (var i = 0; i < depth; i++) {
       var child = document.createElement('div');
       child.classList.add('js-div-' + i);
       parent.appendChild(child);
@@ -162,7 +162,7 @@
   }
 
   function run() {
-    const last = build();
+    const last = build(DEPTH);
     const selector = '.' + last.className;
     const results = [native, delegated, jquery, jqueryss].map(function(test) {
       var harness = test(selector);
