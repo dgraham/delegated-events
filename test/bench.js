@@ -92,6 +92,18 @@
     };
   }
 
+  function zepto() {
+    return {
+      name: 'zepto',
+      on: function(selector) {
+        Zepto(document).on('test:bench', selector, handler);
+      },
+      off: function(selector) {
+        Zepto(document).off('test:bench', selector, handler);
+      }
+    };
+  }
+
   function dispatch(node) {
     for (var i = 0; i < DISPATCHES; i++) {
       node.dispatchEvent(
@@ -156,7 +168,7 @@
   function run() {
     const selectors = build(DEPTH);
     const deepest = document.querySelector(selectors[selectors.length - 1]);
-    const results = [native, delegated, jquery, jqueryss].map(function(test) {
+    const results = [native, delegated, jquery, zepto, jqueryss].map(function(test) {
       var harness = test();
       var ready = harness.setup ? harness.setup() : Promise.resolve();
       return ready.then(function() {
