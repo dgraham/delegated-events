@@ -1,0 +1,12 @@
+{
+  "name": "delegated-events",
+  "description": "A small, fast delegated event library.",
+  "main": "delegated-events.js",
+  "license": "MIT",
+  "ignore": [
+    ".*",
+    "Makefile"
+    "test/",
+    "vendor/",
+  ]
+}
