@@ -161,18 +161,22 @@
     return Math.round(performance.now() - start);
   }
 
-  const last = build();
-  const selector = '.' + last.className;
-  const results = [native, delegated, jquery, jqueryss].map(function(test) {
-    var harness = test(selector);
-    var ready = harness.setup ? harness.setup() : Promise.resolve();
-    return ready.then(function() {
-      var handlers = observers(harness.handler);
-      handlers.forEach(harness.on);
-      var duration = benchmark(dispatch, last);
-      handlers.forEach(harness.off);
-      return {name: harness.name, value: duration};
+  function run() {
+    const last = build();
+    const selector = '.' + last.className;
+    const results = [native, delegated, jquery, jqueryss].map(function(test) {
+      var harness = test(selector);
+      var ready = harness.setup ? harness.setup() : Promise.resolve();
+      return ready.then(function() {
+        var handlers = observers(harness.handler);
+        handlers.forEach(harness.on);
+        var duration = benchmark(dispatch, last);
+        handlers.forEach(harness.off);
+        return {name: harness.name, value: duration};
+      });
     });
-  });
-  Promise.all(results).then(report);
+    Promise.all(results).then(report);
+  }
+
+  run();
 })();
