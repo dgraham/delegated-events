@@ -1,6 +1,5 @@
 (function() {
   const DEPTH = 25;
-  const OBSERVERS = 100;
   const DISPATCHES = 1500;
 
   function build(depth) {
