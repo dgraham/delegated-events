@@ -1,5 +1,5 @@
 (function() {
-  const DEPTH = 100;
+  const DEPTH = 25;
   const OBSERVERS = 100;
   const DISPATCHES = 2500;
 
