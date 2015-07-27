@@ -8,8 +8,8 @@
   },
   "ignore": [
     ".*",
-    "Makefile"
+    "Makefile",
     "test/",
-    "vendor/",
+    "vendor/"
   ]
 }
