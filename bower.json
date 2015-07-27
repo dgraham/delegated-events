@@ -3,6 +3,9 @@
   "description": "A small, fast delegated event library.",
   "main": "delegated-events.js",
   "license": "MIT",
+  "dependencies": {
+    "selector-set": "~1.0"
+  },
   "ignore": [
     ".*",
     "Makefile"
