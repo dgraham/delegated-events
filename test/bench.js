@@ -9,7 +9,7 @@
       var name = 'js-div-' + i;
       selectors.push('.' + name);
       var child = document.createElement('div');
-      child.classList.add(name);
+      child.classList.add(name, 'a', 'b', 'c');
       parent.appendChild(child);
       parent = child;
     }
