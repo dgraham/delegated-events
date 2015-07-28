@@ -125,5 +125,28 @@ describe('delegated event listeners', function() {
       $.off('test:event', '.js-test-parent', one);
       $.off('test:event', '.js-test-child', two);
     });
+
+    it('calculates selector matches before dispatching event', function(done) {
+      this.child.classList.add('inactive');
+
+      var one = function(event) {
+        event.target.classList.remove('inactive');
+        event.target.classList.add('active');
+        assert.ok(event);
+        done();
+      };
+
+      var two = function(event) {
+        fail();
+      };
+
+      $.on('test:event', '.js-test-child.inactive', one);
+      $.on('test:event', '.js-test-child.active', two);
+      $.fire(this.child, 'test:event');
+      $.off('test:event', '.js-test-child.inactive', one);
+      $.off('test:event', '.js-test-child.active', two);
+
+      this.child.classList.remove('active');
+    });
   });
 });
