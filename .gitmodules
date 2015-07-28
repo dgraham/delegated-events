@@ -10,3 +10,12 @@
 [submodule "vendor/jquery-selector-set"]
 	path = vendor/jquery-selector-set
 	url = https://github.com/josh/jquery-selector-set
+[submodule "vendor/classList.js"]
+	path = vendor/classList.js
+	url = https://github.com/components/classList.js
+[submodule "vendor/WeakMap"]
+	path = vendor/WeakMap
+	url = https://github.com/Polymer/WeakMap
+[submodule "vendor/custom-event-polyfill"]
+	path = vendor/custom-event-polyfill
+	url = https://github.com/krambuhl/custom-event-polyfill
