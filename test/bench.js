@@ -1,6 +1,6 @@
 (function() {
-  const DEPTH = 25;
-  const DISPATCHES = 1500;
+  var DEPTH = 25;
+  var DISPATCHES = 1500;
 
   function build(depth) {
     var selectors = [];
@@ -31,16 +31,16 @@
   }
 
   function native() {
-    const handlers = new Map();
+    var handlers = new Map();
     return {
       name: 'native',
       on: function(selector) {
-        const clone = matchHandler.bind(selector);
+        var clone = matchHandler.bind(selector);
         handlers.set(selector, clone);
         document.addEventListener('test:bench', clone);
       },
       off: function(selector) {
-        const handler = handlers.get(selector);
+        var handler = handlers.get(selector);
         handlers.delete(selector);
         document.removeEventListener('test:bench', handler);
       },
@@ -76,7 +76,7 @@
       name: 'jQuery + SelectorSet',
       setup: function() {
         return new Promise(function(resolve) {
-          const script = document.createElement('script');
+          var script = document.createElement('script');
           script.addEventListener('load', resolve);
           script.src = '../vendor/jquery-selector-set/jquery.selector-set.js';
           document.head.appendChild(script);
@@ -116,9 +116,9 @@
   }
 
   function report(results) {
-    const colors = '#54c7fc #ffcd00 #ff9600 #ff2851 #0076ff #44db5e #ff3824 #8e8e93'.split(' ');
+    var colors = '#54c7fc #ffcd00 #ff9600 #ff2851 #0076ff #44db5e #ff3824 #8e8e93'.split(' ');
 
-    const max = results.reduce(function(a, b) {
+    var max = results.reduce(function(a, b) {
       return a.value > b.value ? a : b;
     });
 
@@ -134,8 +134,8 @@
       return a.value < b.value ? -1 : 1;
     });
 
-    const svg = document.querySelector('.js-results');
-    const ns = 'http://www.w3.org/2000/svg';
+    var svg = document.querySelector('.js-results');
+    var ns = 'http://www.w3.org/2000/svg';
     results.forEach(function(result, ix) {
       var row = document.createElementNS(ns, 'rect');
       row.setAttribute('fill', result.color);
@@ -157,17 +157,17 @@
   }
 
   function benchmark() {
-    const fn = arguments[0];
-    const args = Array.prototype.slice.call(arguments, 1);
-    const start = performance.now();
+    var fn = arguments[0];
+    var args = Array.prototype.slice.call(arguments, 1);
+    var start = performance.now();
     fn.apply(null, args);
     return Math.round(performance.now() - start);
   }
 
   function run() {
-    const selectors = build(DEPTH);
-    const deepest = document.querySelector(selectors[selectors.length - 1]);
-    const results = [native, delegated, jquery, zepto, jqueryss].map(function(test) {
+    var selectors = build(DEPTH);
+    var deepest = document.querySelector(selectors[selectors.length - 1]);
+    var results = [native, delegated, jquery, zepto, jqueryss].map(function(test) {
       var harness = test();
       var ready = harness.setup ? harness.setup() : Promise.resolve();
       return ready.then(function() {

@@ -1,10 +1,10 @@
 (function() {
-  const events = {};
-  const propagationStopped = new WeakMap();
-  const immediatePropagationStopped = new WeakMap();
+  var events = {};
+  var propagationStopped = new WeakMap();
+  var immediatePropagationStopped = new WeakMap();
 
   function before(subject, verb, fn) {
-    const source = subject[verb];
+    var source = subject[verb];
     subject[verb] = function() {
       fn.apply(subject, arguments);
       return source.apply(subject, arguments);
@@ -39,8 +39,8 @@
     before(event, 'stopPropagation', trackPropagation);
     before(event, 'stopImmediatePropagation', trackImmediate);
 
-    const selectors = events[event.type];
-    const queue = matches(selectors, event.target);
+    var selectors = events[event.type];
+    var queue = matches(selectors, event.target);
     for (var i = 0, len1 = queue.length; i < len1; i++) {
       if (propagationStopped.has(event)) break;
       var matched = queue[i];
@@ -64,7 +64,7 @@
   };
 
   this.off = function(name, selector, fn) {
-    const selectors = events[name];
+    var selectors = events[name];
     if (selectors) {
       selectors.remove(selector, fn);
     }
