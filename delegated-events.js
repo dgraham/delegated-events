@@ -65,9 +65,12 @@
 
   this.off = function(name, selector, fn) {
     var selectors = events[name];
-    if (selectors) {
-      selectors.remove(selector, fn);
-    }
+    if (!selectors) return;
+    selectors.remove(selector, fn);
+
+    if (selectors.size) return;
+    delete events[name];
+    document.removeEventListener(name, dispatch, false);
   };
 
   this.fire = function(target, name, detail) {

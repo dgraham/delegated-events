@@ -64,6 +64,17 @@ describe('delegated event listeners', function() {
       $.off('test:event', '*', observer);
       $.fire(document.body, 'test:event');
     });
+
+    it('can reregister after removing', function(done) {
+      var observer = function(event) {
+        assert(true);
+        done();
+      };
+      $.on('test:event', '*', observer);
+      $.off('test:event', '*', observer);
+      $.on('test:event', '*', observer);
+      $.fire(document.body, 'test:event');
+    });
   });
 
   describe('event propagation', function() {
