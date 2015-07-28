@@ -74,6 +74,7 @@ describe('delegated event listeners', function() {
       $.off('test:event', '*', observer);
       $.on('test:event', '*', observer);
       $.fire(document.body, 'test:event');
+      $.off('test:event', '*', observer);
     });
   });
 
