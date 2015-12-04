@@ -1,0 +1,20 @@
+{
+  "name": "delegated-events",
+  "description": "A small, fast delegated event library.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": "dgraham/delegated-events",
+  "homepage": "https://github.com/dgraham/delegated-events",
+  "bugs": "https://github.com/dgraham/delegated-events/issues",
+  "dependencies": {
+    "selector-set": "git+https://github.com/josh/selector-set"
+  },
+  "devDependencies": {
+    "babel-preset-es2015-rollup": "^1.0.0",
+    "rollup": "^0.21.1",
+    "rollup-plugin-babel": "^2.2.0"
+  },
+  "files": [
+    "delegated-events.js"
+  ]
+}

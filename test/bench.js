@@ -1,3 +1,5 @@
+import {on, off} from '../delegated-events';
+
 (function() {
   var DEPTH = 25;
   var DISPATCHES = 1500;
@@ -51,10 +53,10 @@
     return {
       name: 'delegated',
       on: function(selector) {
-        $.on('test:bench', selector, handler);
+        on('test:bench', selector, handler);
       },
       off: function(selector) {
-        $.off('test:bench', selector, handler);
+        off('test:bench', selector, handler);
       }
     };
   }
