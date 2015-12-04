@@ -1,3 +1,5 @@
+import SelectorSet from 'selector-set';
+
 var events = {};
 var propagationStopped = new WeakMap();
 var immediatePropagationStopped = new WeakMap();
