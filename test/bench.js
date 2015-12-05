@@ -120,9 +120,7 @@ import {on, off} from '../delegated-events';
   function report(results) {
     const colors = '#54c7fc #ffcd00 #ff9600 #ff2851 #0076ff #44db5e #ff3824 #8e8e93'.split(' ');
 
-    const max = results.reduce(function(a, b) {
-      return a.value > b.value ? a : b;
-    });
+    const max = results.reduce((a, b) => a.value > b.value ? a : b);
 
     results = results.map(function(result, ix) {
       const percent = 100 * result.value / max.value;
@@ -132,9 +130,7 @@ import {on, off} from '../delegated-events';
         percent: Math.ceil(percent * 10) / 10,
         color: colors[ix]
       };
-    }).sort(function(a, b) {
-      return a.value < b.value ? -1 : 1;
-    });
+    }).sort((a, b) => a.value < b.value ? -1 : 1);
 
     const svg = document.querySelector('.js-results');
     const ns = 'http://www.w3.org/2000/svg';
