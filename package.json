@@ -10,7 +10,9 @@
     "selector-set": "git+https://github.com/josh/selector-set"
   },
   "devDependencies": {
+    "babel-eslint": "^5.0.0-beta4",
     "babel-preset-es2015-rollup": "^1.0.0",
+    "eslint": "^1.10.3",
     "rollup": "^0.21.1",
     "rollup-plugin-babel": "^2.2.0"
   },

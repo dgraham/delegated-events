@@ -2,11 +2,14 @@ bootstrap:
 	git submodule update --init
 	npm install
 
-test:
+lint:
+	./node_modules/.bin/eslint delegated-events.js test/
+
+test: lint
 	./node_modules/.bin/rollup -c rollup.config.test.js
 	open "file://$(shell pwd)/test/test.html"
 
-bench:
+bench: lint
 	./node_modules/.bin/rollup -c rollup.config.bench.js
 	open "file://$(shell pwd)/test/bench.html"
 

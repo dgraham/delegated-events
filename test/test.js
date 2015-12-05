@@ -3,7 +3,7 @@ import {on, off, fire} from '../delegated-events';
 describe('delegated event listeners', function() {
   describe('firing custom events', function() {
     it('fires custom events with detail', function(done) {
-      var observer = function(event) {
+      const observer = function(event) {
         document.removeEventListener('test:event', observer);
         assert(event.bubbles);
         assert(event.cancelable);
@@ -18,7 +18,7 @@ describe('delegated event listeners', function() {
     });
 
     it('fires custom events without detail', function(done) {
-      var observer = function(event) {
+      const observer = function(event) {
         document.removeEventListener('test:event', observer);
         assert(event.detail === undefined || event.detail === null);
         assert.instanceOf(event, CustomEvent);
@@ -29,23 +29,26 @@ describe('delegated event listeners', function() {
     });
 
     it('returns canceled when default prevented', function() {
-      var observer = function(event) { event.preventDefault(); };
+      const observer = (event) => event.preventDefault();
       document.addEventListener('test:event', observer);
-      var canceled = !fire(document.body, 'test:event');
+      const canceled = !fire(document.body, 'test:event');
       assert.equal(canceled, true);
     });
 
     it('returns not canceled when default is not prevented', function(done) {
-      var observer = function(event) { assert.ok(event); done(); };
+      const observer = function(event) {
+        assert.ok(event);
+        done();
+      };
       document.addEventListener('test:event', observer);
-      var canceled = !fire(document.body, 'test:event');
+      const canceled = !fire(document.body, 'test:event');
       assert.equal(canceled, false);
     });
   });
 
   describe('registering event observers', function() {
     it('observes custom events', function(done) {
-      var observer = function(event) {
+      const observer = function(event) {
         off('test:event', '*', observer);
         assert(event.bubbles);
         assert(event.cancelable);
@@ -61,15 +64,15 @@ describe('delegated event listeners', function() {
     });
 
     it('removes event observers', function() {
-      var observer = function() { assert.fail(); };
+      const observer = (event) => assert.fail(event);
       on('test:event', '*', observer);
       off('test:event', '*', observer);
       fire(document.body, 'test:event');
     });
 
     it('can reregister after removing', function(done) {
-      var observer = function(event) {
-        assert(true);
+      const observer = function(event) {
+        assert.ok(event);
         done();
       };
       on('test:event', '*', observer);
@@ -87,16 +90,18 @@ describe('delegated event listeners', function() {
     });
 
     it('fires observers in tree order', function() {
-      var order = [];
+      const order = [];
 
-      var parent = this.parent;
-      var one = function(event) {
+      const parent = this.parent;
+      const one = function(event) {
+        assert.ok(event);
         assert.strictEqual(this, parent);
         order.push(1);
       };
 
-      var child = this.child;
-      var two = function(event) {
+      const child = this.child;
+      const two = function(event) {
+        assert.ok(event);
         assert.strictEqual(this, child);
         order.push(2);
       };
@@ -111,8 +116,8 @@ describe('delegated event listeners', function() {
     });
 
     it('stops propagation bubbling to parent', function() {
-      var one = function(event) { assert.fail(); };
-      var two = function(event) { event.stopPropagation(); };
+      const one = (event) => assert.fail(event);
+      const two = (event) => event.stopPropagation();
       on('test:event', '.js-test-parent', one);
       on('test:event', '.js-test-child', two);
       fire(this.child, 'test:event');
@@ -121,8 +126,8 @@ describe('delegated event listeners', function() {
     });
 
     it('stops immediate propagation', function() {
-      var one = function(event) { event.stopImmediatePropagation(); };
-      var two = function(event) { assert.fail(); };
+      const one = (event) => event.stopImmediatePropagation();
+      const two = (event) => assert.fail(event);
       on('test:event', '.js-test-child', one);
       on('test:event', '.js-test-child', two);
       fire(this.child, 'test:event');
@@ -131,8 +136,11 @@ describe('delegated event listeners', function() {
     });
 
     it('stops immediate propagation but not bubbling', function(done) {
-      var one = function(event) { assert.ok(event); done(); };
-      var two = function(event) { event.stopImmediatePropagation(); };
+      const one = (event) => {
+        assert.ok(event);
+        done();
+      };
+      const two = (event) => event.stopImmediatePropagation();
       on('test:event', '.js-test-parent', one);
       on('test:event', '.js-test-child', two);
       fire(this.child, 'test:event');
@@ -143,16 +151,14 @@ describe('delegated event listeners', function() {
     it('calculates selector matches before dispatching event', function(done) {
       this.child.classList.add('inactive');
 
-      var one = function(event) {
+      const one = function(event) {
         event.target.classList.remove('inactive');
         event.target.classList.add('active');
         assert.ok(event);
         done();
       };
 
-      var two = function(event) {
-        fail();
-      };
+      const two = (event) => assert.fail(event);
 
       on('test:event', '.js-test-child.inactive', one);
       on('test:event', '.js-test-child.active', two);

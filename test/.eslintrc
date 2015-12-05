@@ -1,0 +1,11 @@
+{
+  "env": {
+    "jquery": true,
+    "mocha": true
+  },
+  "globals": {
+    "assert": true,
+    "Zepto": true
+  }
+}
+

@@ -1,11 +1,11 @@
 import SelectorSet from 'selector-set';
 
-var events = {};
-var propagationStopped = new WeakMap();
-var immediatePropagationStopped = new WeakMap();
+const events = {};
+const propagationStopped = new WeakMap();
+const immediatePropagationStopped = new WeakMap();
 
 function before(subject, verb, fn) {
-  var source = subject[verb];
+  const source = subject[verb];
   subject[verb] = function() {
     fn.apply(subject, arguments);
     return source.apply(subject, arguments);
@@ -14,12 +14,12 @@ function before(subject, verb, fn) {
 }
 
 function matches(selectors, target) {
-  var queue = [];
-  var node = target;
+  const queue = [];
+  let node = target;
 
   do {
     if (node.nodeType !== 1) break;
-    var matches = selectors.matches(node);
+    const matches = selectors.matches(node);
     if (matches.length) {
       queue.push({node: node, observers: matches});
     }
@@ -40,13 +40,13 @@ function dispatch(event) {
   before(event, 'stopPropagation', trackPropagation);
   before(event, 'stopImmediatePropagation', trackImmediate);
 
-  var selectors = events[event.type];
-  var queue = matches(selectors, event.target);
-  for (var i = 0, len1 = queue.length; i < len1; i++) {
+  const selectors = events[event.type];
+  const queue = matches(selectors, event.target);
+  for (let i = 0, len1 = queue.length; i < len1; i++) {
     if (propagationStopped.has(event)) break;
-    var matched = queue[i];
+    const matched = queue[i];
 
-    for (var j = 0, len2 = matched.observers.length; j < len2; j++) {
+    for (let j = 0, len2 = matched.observers.length; j < len2; j++) {
       if (immediatePropagationStopped.has(event)) break;
       matched.observers[j].data.call(matched.node, event);
     }
@@ -55,7 +55,7 @@ function dispatch(event) {
 }
 
 export function on(name, selector, fn) {
-  var selectors = events[name];
+  let selectors = events[name];
   if (!selectors) {
     selectors = new SelectorSet();
     events[name] = selectors;
@@ -65,7 +65,7 @@ export function on(name, selector, fn) {
 }
 
 export function off(name, selector, fn) {
-  var selectors = events[name];
+  const selectors = events[name];
   if (!selectors) return;
   selectors.remove(selector, fn);
 
