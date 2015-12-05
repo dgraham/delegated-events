@@ -5,19 +5,21 @@ A small, fast delegated event library for JavaScript.
 ## Usage
 
 ```js
+import {on, off, fire} from 'delegated-events';
+
 // Listen for browser-generated events.
-$.on('click', '.js-button', function(event) {
+on('click', '.js-button', function(event) {
   console.log('clicked', this);
 });
 
 // Listen for custom events triggered by your app.
-$.on('robot:singularity', '.js-robot-image', function(event) {
+on('robot:singularity', '.js-robot-image', function(event) {
   console.log('robot', event.detail.name, this.src);
 });
 
 // Dispatch a custom event on an element.
 var image = document.querySelector('.js-robot-image');
-$.fire(image, 'robot:singularity', {name: 'Hubot'});
+fire(image, 'robot:singularity', {name: 'Hubot'});
 ```
 
 ## Directly-bound events
@@ -121,17 +123,17 @@ The goals of this library are to:
 
 ### Shortcuts
 
-Delegated event handling shortcuts (`$.on`, `$.off`, `$.fire`) are provided
+Delegated event handling shortcuts (`on`, `off`, `fire`) are provided
 so event handlers aren't required to test for matching elements
 themselves. jQuery has great documentation on [event delegation with selectors] [jq] too.
 
 [jq]: http://api.jquery.com/on/
 
-Here's the same globally delegated handler as above but using `$.on`.
+Here's the same globally delegated handler as above but using `on`.
 
 ```js
 // Easy :)
-$.on('click', '.js-button', function(event) {
+on('click', '.js-button', function(event) {
   console.log('clicked', event.target);
 });
 ```
@@ -158,16 +160,16 @@ and can be run with `make bench`.
 
 ## Triggering custom events
 
-A `$.fire` shortcut function is provided to trigger custom events with
+A `fire` shortcut function is provided to trigger custom events with
 attached data objects.
 
 ```js
-$.on('validation:success', '.js-comment-input', function(event) {
+on('validation:success', '.js-comment-input', function(event) {
   console.log('succeeded for', event.detail.login);
 });
 
 var input = document.querySelector('.js-comment-input');
-$.fire(input, 'validation:success', {login: 'hubot'});
+fire(input, 'validation:success', {login: 'hubot'});
 ```
 
 The standard way of doing this works well but is more verbose.
