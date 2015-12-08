@@ -1,18 +1,9 @@
 [submodule "vendor/selector-set"]
 	path = vendor/selector-set
 	url = https://github.com/josh/selector-set
-[submodule "vendor/mocha"]
-	path = vendor/mocha
-	url = https://github.com/mochajs/mocha
-[submodule "vendor/chai"]
-	path = vendor/chai
-	url = https://github.com/chaijs/chai
 [submodule "vendor/jquery-selector-set"]
 	path = vendor/jquery-selector-set
 	url = https://github.com/josh/jquery-selector-set
-[submodule "vendor/classList.js"]
-	path = vendor/classList.js
-	url = https://github.com/components/classList.js
 [submodule "vendor/WeakMap"]
 	path = vendor/WeakMap
 	url = https://github.com/Polymer/WeakMap
