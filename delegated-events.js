@@ -3,6 +3,7 @@ import SelectorSet from 'selector-set';
 const events = {};
 const propagationStopped = new WeakMap();
 const immediatePropagationStopped = new WeakMap();
+const currentTargets = new WeakMap();
 
 function before(subject, verb, fn) {
   const source = subject[verb];
@@ -36,15 +37,21 @@ function trackImmediate() {
   immediatePropagationStopped.set(this, true);
 }
 
+function getCurrentTarget() {
+  return currentTargets.get(this);
+}
+
 function dispatch(event) {
   before(event, 'stopPropagation', trackPropagation);
   before(event, 'stopImmediatePropagation', trackImmediate);
+  Object.defineProperty(event, 'currentTarget', {get: getCurrentTarget});
 
   const selectors = events[event.type];
   const queue = matches(selectors, event.target);
   for (let i = 0, len1 = queue.length; i < len1; i++) {
     if (propagationStopped.has(event)) break;
     const matched = queue[i];
+    currentTargets.set(event, matched.node);
 
     for (let j = 0, len2 = matched.observers.length; j < len2; j++) {
       if (immediatePropagationStopped.has(event)) break;

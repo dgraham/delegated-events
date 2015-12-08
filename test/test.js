@@ -55,7 +55,9 @@ describe('delegated event listeners', function() {
         assert.equal(event.type, 'test:event');
         assert.deepEqual({id: 42, login: 'hubot'}, event.detail);
         assert.strictEqual(document.body, event.target);
+        assert.strictEqual(document.body, event.currentTarget);
         assert.strictEqual(document.body, this);
+        assert.strictEqual(this, event.currentTarget);
         assert.instanceOf(event, CustomEvent);
         done();
       };
@@ -94,14 +96,18 @@ describe('delegated event listeners', function() {
 
       const parent = this.parent;
       const one = function(event) {
-        assert.ok(event);
+        assert.strictEqual(child, event.target);
+        assert.strictEqual(parent, event.currentTarget);
+        assert.strictEqual(this, event.currentTarget);
         assert.strictEqual(this, parent);
         order.push(1);
       };
 
       const child = this.child;
       const two = function(event) {
-        assert.ok(event);
+        assert.strictEqual(child, event.target);
+        assert.strictEqual(child, event.currentTarget);
+        assert.strictEqual(this, event.currentTarget);
         assert.strictEqual(this, child);
         order.push(2);
       };
