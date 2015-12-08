@@ -35,10 +35,11 @@ describe('delegated event listeners', function() {
     });
 
     it('returns not canceled when default is not prevented', function() {
-      const observer = (event) => assert.ok(event);
+      const [observer, trace] = spy((event) => assert.ok(event));
       document.addEventListener('test:event', observer);
       const canceled = !fire(document.body, 'test:event');
       assert.equal(canceled, false);
+      assert.equal(trace.calls, 1);
       document.removeEventListener('test:event', observer);
     });
   });
@@ -75,7 +76,7 @@ describe('delegated event listeners', function() {
       on('test:register', 'body', observer);
       fire(document.body, 'test:register');
       off('test:register', 'body', observer);
-      assert.equal(1, trace.calls);
+      assert.equal(trace.calls, 1);
     });
   });
 
@@ -141,7 +142,7 @@ describe('delegated event listeners', function() {
       on('test:stop', '.js-test-parent', one);
       on('test:stop', '.js-test-child', two);
       fire(this.child, 'test:stop');
-      assert.equal(1, trace.calls);
+      assert.equal(trace.calls, 1);
       off('test:stop', '.js-test-parent', one);
       off('test:stop', '.js-test-child', two);
     });
