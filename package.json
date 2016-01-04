@@ -1,13 +1,12 @@
 {
   "name": "delegated-events",
   "description": "A small, fast delegated event library.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "repository": "dgraham/delegated-events",
   "homepage": "https://github.com/dgraham/delegated-events",
   "bugs": "https://github.com/dgraham/delegated-events/issues",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-eslint": "^5.0.0-beta4",
     "babel-preset-es2015-rollup": "^1.0.0",
