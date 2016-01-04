@@ -6,6 +6,7 @@
   "repository": "dgraham/delegated-events",
   "homepage": "https://github.com/dgraham/delegated-events",
   "bugs": "https://github.com/dgraham/delegated-events/issues",
+  "main": "delegated-events.js",
   "dependencies": {},
   "devDependencies": {
     "babel-eslint": "^5.0.0-beta4",
