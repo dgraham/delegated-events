@@ -9,12 +9,13 @@
   "main": "dist/delegated-events.js",
   "jsnext:main": "delegated-events.js",
   "scripts": {
+    "lint": "eslint delegated-events.js test",
     "bootstrap": "git submodule update --init && npm install",
-    "prebuild": "eslint delegated-events.js test/",
+    "prebuild": "npm run lint",
     "build": "babel --plugins transform-es2015-modules-amd delegated-events.js -d dist",
-    "pretest": "rollup -c rollup.config.test.js",
+    "pretest": "npm run lint && rollup -c rollup.config.test.js",
     "test": "open \"file://$(pwd)/test/test.html\"",
-    "prebench": "rollup -c rollup.config.bench.js",
+    "prebench": "npm run lint && rollup -c rollup.config.bench.js",
     "bench": "open \"file://$(pwd)/test/bench.html\"",
     "prepublish": "npm run build"
   },
