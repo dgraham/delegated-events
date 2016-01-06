@@ -156,7 +156,7 @@ It relies on a small [`SelectorSet`](https://github.com/josh/selector-set)
 data structure to optimize selector matching against the delegated events.
 
 A micro-benchmark to compare relative event handling performance is included
-and can be run with `make bench`.
+and can be run with `npm run bench`.
 
 ## Triggering custom events
 
@@ -208,9 +208,9 @@ and [`WeakMap`] [weakmap].
 ## Development
 
 ```
-make bootstrap
-make test
-make bench
+npm run bootstrap
+npm test
+npm run bench
 ```
 
 ## License
