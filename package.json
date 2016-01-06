@@ -6,10 +6,17 @@
   "repository": "dgraham/delegated-events",
   "homepage": "https://github.com/dgraham/delegated-events",
   "bugs": "https://github.com/dgraham/delegated-events/issues",
-  "main": "delegated-events.js",
+  "main": "dist/delegated-events.js",
+  "jsnext:main": "delegated-events.js",
+  "scripts": {
+    "prebuild": "eslint delegated-events.js test/",
+    "build": "babel --plugins transform-es2015-modules-amd delegated-events.js -d dist",
+    "prepublish": "npm run build"
+  },
   "dependencies": {},
   "devDependencies": {
     "babel-eslint": "^5.0.0-beta4",
+    "babel-plugin-transform-es2015-modules-amd": "^6.3.13",
     "babel-preset-es2015-rollup": "^1.0.0",
     "chai": "^3.4.1",
     "custom-event-polyfill": "^0.2.1",
@@ -19,6 +26,7 @@
     "rollup-plugin-babel": "^2.2.0"
   },
   "files": [
-    "delegated-events.js"
+    "delegated-events.js",
+    "dist"
   ]
 }
