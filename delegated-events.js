@@ -1,4 +1,4 @@
-import SelectorSet from 'selector-set';
+// import SelectorSet from 'selector-set';
 
 const events = {};
 const propagationStopped = new WeakMap();
