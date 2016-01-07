@@ -41,10 +41,16 @@ function getCurrentTarget() {
   return currentTargets.get(this);
 }
 
+function defineCurrentTarget(event) {
+  const descriptor = Object.getOwnPropertyDescriptor(Event.prototype, 'currentTarget');
+  if (!descriptor) return;
+  Object.defineProperty(event, 'currentTarget', {get: getCurrentTarget});
+}
+
 function dispatch(event) {
   before(event, 'stopPropagation', trackPropagation);
   before(event, 'stopImmediatePropagation', trackImmediate);
-  Object.defineProperty(event, 'currentTarget', {get: getCurrentTarget});
+  defineCurrentTarget(event);
 
   const selectors = events[event.type];
   const queue = matches(selectors, event.target);
