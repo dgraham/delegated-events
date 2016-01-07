@@ -49,12 +49,12 @@ function dispatch(event) {
   const selectors = events[event.type];
   const queue = matches(selectors, event.target);
   for (let i = 0, len1 = queue.length; i < len1; i++) {
-    if (propagationStopped.has(event)) break;
+    if (propagationStopped.get(event)) break;
     const matched = queue[i];
     currentTargets.set(event, matched.node);
 
     for (let j = 0, len2 = matched.observers.length; j < len2; j++) {
-      if (immediatePropagationStopped.has(event)) break;
+      if (immediatePropagationStopped.get(event)) break;
       matched.observers[j].data.call(matched.node, event);
     }
     immediatePropagationStopped.delete(event);
