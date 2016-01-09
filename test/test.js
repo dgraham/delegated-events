@@ -35,7 +35,7 @@ describe('delegated event listeners', function() {
     });
 
     it('returns not canceled when default is not prevented', function() {
-      const [observer, trace] = spy((event) => assert.ok(event));
+      const [observer, trace] = spy(event => assert.ok(event));
       document.addEventListener('test:event', observer);
       const canceled = !fire(document.body, 'test:event');
       assert.equal(canceled, false);
@@ -70,7 +70,7 @@ describe('delegated event listeners', function() {
     });
 
     it('can reregister after removing', function() {
-      const [observer, trace] = spy((event) => assert.ok(event));
+      const [observer, trace] = spy(event => assert.ok(event));
       on('test:register', 'body', observer);
       off('test:register', 'body', observer);
       on('test:register', 'body', observer);
@@ -148,7 +148,7 @@ describe('delegated event listeners', function() {
     });
 
     it('stops immediate propagation but not bubbling', function() {
-      const [one, trace] = spy((event) => assert.ok(event));
+      const [one, trace] = spy(event => assert.ok(event));
       const two = (event) => event.stopImmediatePropagation();
       on('test:stop', '.js-test-parent', one);
       on('test:stop', '.js-test-child', two);
