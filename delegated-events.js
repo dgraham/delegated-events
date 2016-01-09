@@ -38,7 +38,7 @@ function trackImmediate() {
 }
 
 function getCurrentTarget() {
-  return currentTargets.get(this);
+  return currentTargets.get(this) || null;
 }
 
 function defineCurrentTarget(event) {
@@ -65,6 +65,7 @@ function dispatch(event) {
     }
     immediatePropagationStopped.delete(event);
   }
+  currentTargets.delete(event);
 }
 
 export function on(name, selector, fn) {

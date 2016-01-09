@@ -116,6 +116,17 @@ describe('delegated event listeners', function() {
       assert.deepEqual([2, 1], order);
     });
 
+    it('clears currentTarget after propagation', function() {
+      const [observer, trace] = spy(event => assert.ok(event.currentTarget));
+      const event = new CustomEvent('test:clear', {bubbles: true, cancelable: true});
+
+      on('test:clear', 'body', observer);
+      document.body.dispatchEvent(event);
+      assert.equal(trace.calls, 1);
+      assert.isNull(event.currentTarget);
+      off('test:clear', 'body', observer);
+    });
+
     it('stops propagation bubbling to parent', function() {
       const one = (event) => assert.fail(event);
       const two = (event) => event.stopPropagation();
