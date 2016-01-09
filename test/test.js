@@ -127,6 +127,21 @@ describe('delegated event listeners', function() {
       off('test:clear', 'body', observer);
     });
 
+    it('prevents redispatch after propagation is stopped', function() {
+      const [observer, trace] = spy(event => event.stopPropagation());
+      const event = new CustomEvent('test:redispatch', {bubbles: true});
+
+      on('test:redispatch', 'body', observer);
+
+      document.body.dispatchEvent(event);
+      assert.equal(trace.calls, 1);
+
+      document.body.dispatchEvent(event);
+      assert.equal(trace.calls, 1);
+
+      off('test:redispatch', 'body', observer);
+    });
+
     it('stops propagation bubbling to parent', function() {
       const one = (event) => assert.fail(event);
       const two = (event) => event.stopPropagation();
