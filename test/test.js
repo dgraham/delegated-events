@@ -1,7 +1,7 @@
 import {on, off, fire} from '../delegated-events';
 
 describe('delegated event listeners', function() {
-  describe('firing custom events', function() {
+  describe('custom event dispatch', function() {
     it('fires custom events with detail', function() {
       const observer = function(event) {
         assert(event.bubbles);
@@ -44,7 +44,7 @@ describe('delegated event listeners', function() {
     });
   });
 
-  describe('registering event observers', function() {
+  describe('event observer registration', function() {
     it('observes custom events', function() {
       const observer = function(event) {
         assert(event.bubbles);
