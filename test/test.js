@@ -118,7 +118,7 @@ describe('delegated event listeners', function() {
 
     it('clears currentTarget after propagation', function() {
       const [observer, trace] = spy(event => assert.ok(event.currentTarget));
-      const event = new CustomEvent('test:clear', {bubbles: true, cancelable: true});
+      const event = new CustomEvent('test:clear', {bubbles: true});
 
       on('test:clear', 'body', observer);
       document.body.dispatchEvent(event);
