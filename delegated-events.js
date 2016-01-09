@@ -34,6 +34,7 @@ function trackPropagation() {
 }
 
 function trackImmediate() {
+  propagationStopped.set(this, true);
   immediatePropagationStopped.set(this, true);
 }
 
@@ -63,7 +64,6 @@ function dispatch(event) {
       if (immediatePropagationStopped.get(event)) break;
       matched.observers[j].data.call(matched.node, event);
     }
-    immediatePropagationStopped.delete(event);
   }
   currentTargets.delete(event);
 }

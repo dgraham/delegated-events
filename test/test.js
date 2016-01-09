@@ -147,13 +147,12 @@ describe('delegated event listeners', function() {
       off('test:immediate', '.js-test-child', two);
     });
 
-    it('stops immediate propagation but not bubbling', function() {
-      const [one, trace] = spy(event => assert.ok(event));
+    it('stops immediate propagation and bubbling', function() {
+      const one = (event) => assert.fail(event);
       const two = (event) => event.stopImmediatePropagation();
       on('test:stop', '.js-test-parent', one);
       on('test:stop', '.js-test-child', two);
       fire(this.child, 'test:stop');
-      assert.equal(trace.calls, 1);
       off('test:stop', '.js-test-parent', one);
       off('test:stop', '.js-test-child', two);
     });
