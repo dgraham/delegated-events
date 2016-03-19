@@ -19,7 +19,9 @@
     "bench": "open \"file://$(pwd)/test/bench.html\"",
     "prepublish": "npm run build"
   },
-  "dependencies": {},
+  "dependencies": {
+    "selector-set": "^1.1.0"
+  },
   "devDependencies": {
     "babel-cli": "^6.6.5",
     "babel-eslint": "6.0.0-beta.6",
@@ -30,7 +32,8 @@
     "eslint": "^2.4.0",
     "mocha": "^2.4.5",
     "rollup": "^0.25.4",
-    "rollup-plugin-babel": "^2.4.0"
+    "rollup-plugin-babel": "^2.4.0",
+    "rollup-plugin-node-resolve": "^1.5.0"
   },
   "files": [
     "delegated-events.js",

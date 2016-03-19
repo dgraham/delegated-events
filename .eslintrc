@@ -34,8 +34,5 @@
     "browser": true,
     "es6": true
   },
-  "globals": {
-    "SelectorSet": false
-  },
   "extends": "eslint:recommended"
 }
