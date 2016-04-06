@@ -7,6 +7,6 @@ export default {
   format: 'iife',
   plugins: [
     babel(),
-    nodeResolve({jsnext:true})
+    nodeResolve({jsnext: true})
   ]
 };
