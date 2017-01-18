@@ -15,7 +15,7 @@ function before(subject, verb, fn) {
   return subject;
 }
 
-function matches(selectors, target) {
+function matches(selectors, target, reverse) {
   const queue = [];
   let node = target;
 
@@ -23,7 +23,12 @@ function matches(selectors, target) {
     if (node.nodeType !== 1) break;
     const matches = selectors.matches(node);
     if (matches.length) {
-      queue.push({node: node, observers: matches});
+      const m = {node: node, observers: matches};
+      if (reverse) {
+        queue.unshift(m);
+      } else {
+        queue.push(m);
+      }
     }
   } while (node = node.parentElement);
 
@@ -56,13 +61,7 @@ function dispatch(event) {
 
   const events = event.eventPhase === 1 ? captureEvents : bubbleEvents;
   const selectors = events[event.type];
-  const queue = matches(selectors, event.target);
-
-  // capture event phase walks propagation path by descending down the tree
-  // rather than walking up.
-  if (event.eventPhase === 1) {
-    queue.reverse();
-  }
+  const queue = matches(selectors, event.target, event.eventPhase === 1);
 
   for (let i = 0, len1 = queue.length; i < len1; i++) {
     if (propagationStopped.get(event)) break;
