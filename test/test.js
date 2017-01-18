@@ -134,7 +134,7 @@ describe('delegated event listeners', function() {
       off('test:order', '.js-test-parent', three);
       off('test:order', '.js-test-child', four);
 
-      assert.deepEqual([2, 1, 4, 3], order);
+      assert.deepEqual([1, 2, 4, 3], order);
     });
 
     it('clears currentTarget after propagation', function() {

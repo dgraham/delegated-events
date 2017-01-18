@@ -57,6 +57,13 @@ function dispatch(event) {
   const events = event.eventPhase === 1 ? captureEvents : bubbleEvents;
   const selectors = events[event.type];
   const queue = matches(selectors, event.target);
+
+  // capture event phase walks propagation path by descending down the tree
+  // rather than walking up.
+  if (event.eventPhase === 1) {
+    queue.reverse();
+  }
+
   for (let i = 0, len1 = queue.length; i < len1; i++) {
     if (propagationStopped.get(event)) break;
     const matched = queue[i];
