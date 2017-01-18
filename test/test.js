@@ -90,6 +90,8 @@ describe('delegated event listeners', function() {
       const order = [];
 
       const parent = this.parent;
+      const child = this.child;
+
       const one = function(event) {
         assert.strictEqual(child, event.target);
         assert.strictEqual(parent, event.currentTarget);
@@ -98,7 +100,6 @@ describe('delegated event listeners', function() {
         order.push(1);
       };
 
-      const child = this.child;
       const two = function(event) {
         assert.strictEqual(child, event.target);
         assert.strictEqual(child, event.currentTarget);
@@ -107,13 +108,33 @@ describe('delegated event listeners', function() {
         order.push(2);
       };
 
-      on('test:order', '.js-test-parent', one);
-      on('test:order', '.js-test-child', two);
-      fire(this.child, 'test:order');
-      off('test:order', '.js-test-parent', one);
-      off('test:order', '.js-test-child', two);
+      const three = function(event) {
+        assert.strictEqual(child, event.target);
+        assert.strictEqual(parent, event.currentTarget);
+        assert.strictEqual(this, event.currentTarget);
+        assert.strictEqual(this, parent);
+        order.push(3);
+      };
 
-      assert.deepEqual([2, 1], order);
+      const four = function(event) {
+        assert.strictEqual(child, event.target);
+        assert.strictEqual(child, event.currentTarget);
+        assert.strictEqual(this, event.currentTarget);
+        assert.strictEqual(this, child);
+        order.push(4);
+      };
+
+      on('test:order', '.js-test-parent', one, {capture: true});
+      on('test:order', '.js-test-child', two, {capture: true});
+      on('test:order', '.js-test-parent', three);
+      on('test:order', '.js-test-child', four);
+      fire(this.child, 'test:order');
+      off('test:order', '.js-test-parent', one, {capture: true});
+      off('test:order', '.js-test-child', two, {capture: true});
+      off('test:order', '.js-test-parent', three);
+      off('test:order', '.js-test-child', four);
+
+      assert.deepEqual([2, 1, 4, 3], order);
     });
 
     it('clears currentTarget after propagation', function() {

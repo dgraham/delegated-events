@@ -1,6 +1,7 @@
 import SelectorSet from 'selector-set';
 
-const events = {};
+const bubbleEvents = {};
+const captureEvents = {};
 const propagationStopped = new WeakMap();
 const immediatePropagationStopped = new WeakMap();
 const currentTargets = new WeakMap();
@@ -53,6 +54,7 @@ function dispatch(event) {
   before(event, 'stopImmediatePropagation', trackImmediate);
   defineCurrentTarget(event);
 
+  const events = event.eventPhase === 1 ? captureEvents : bubbleEvents;
   const selectors = events[event.type];
   const queue = matches(selectors, event.target);
   for (let i = 0, len1 = queue.length; i < len1; i++) {
@@ -68,17 +70,23 @@ function dispatch(event) {
   currentTargets.delete(event);
 }
 
-export function on(name, selector, fn) {
+export function on(name, selector, fn, options = {}) {
+  const capture = options.capture ? true : false;
+  const events = capture ? captureEvents : bubbleEvents;
+
   let selectors = events[name];
   if (!selectors) {
     selectors = new SelectorSet();
     events[name] = selectors;
-    document.addEventListener(name, dispatch, false);
+    document.addEventListener(name, dispatch, capture);
   }
   selectors.add(selector, fn);
 }
 
-export function off(name, selector, fn) {
+export function off(name, selector, fn, options = {}) {
+  const capture = options.capture ? true : false;
+  const events = capture ? captureEvents : bubbleEvents;
+
   const selectors = events[name];
   if (!selectors) return;
   selectors.remove(selector, fn);
