@@ -23,11 +23,11 @@ function matches(selectors, target, reverse) {
     if (node.nodeType !== 1) break;
     const matches = selectors.matches(node);
     if (matches.length) {
-      const m = {node: node, observers: matches};
+      const matched = {node: node, observers: matches};
       if (reverse) {
-        queue.unshift(m);
+        queue.unshift(matched);
       } else {
-        queue.push(m);
+        queue.push(matched);
       }
     }
   } while (node = node.parentElement);
