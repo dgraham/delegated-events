@@ -1,0 +1,13 @@
+/* @flow */
+
+type EventHandler = (event: Event) => mixed
+
+type EventListenerOptions = {
+  capture?: boolean
+};
+
+declare module.exports: {
+  on(name: string, selector: string, handler: EventHandler, options?: EventListenerOptions): void;
+  off(name: string, selector: string, handler: EventHandler, options?: EventListenerOptions): void;
+  fire(target: EventTarget, name: string, detail?: any): void;
+};
