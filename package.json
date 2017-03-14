@@ -10,8 +10,9 @@
   "jsnext:main": "delegated-events.js",
   "scripts": {
     "lint": "eslint delegated-events.js test",
+    "flow": "flow check",
     "bootstrap": "git submodule update --init && npm install",
-    "prebuild": "npm run lint",
+    "prebuild": "npm run lint && npm run flow",
     "build": "rollup -c rollup.config.dist.js && cp delegated-events.js.flow dist/",
     "pretest": "npm run lint && rollup -c rollup.config.test.js",
     "test": "open \"file://$(pwd)/test/test.html\"",
