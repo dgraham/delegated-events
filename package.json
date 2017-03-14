@@ -10,8 +10,9 @@
   "jsnext:main": "delegated-events.js",
   "scripts": {
     "lint": "eslint delegated-events.js test",
+    "flow": "flow check",
     "bootstrap": "git submodule update --init && npm install",
-    "prebuild": "npm run lint",
+    "prebuild": "npm run lint && npm run flow",
     "build": "rollup -c rollup.config.dist.js && cp delegated-events.js.flow dist/",
     "pretest": "npm run lint && rollup -c rollup.config.test.js",
     "test": "open \"file://$(pwd)/test/test.html\"",
@@ -28,6 +29,7 @@
     "chai": "^3.5.0",
     "custom-event-polyfill": "^0.3.0",
     "eslint": "^3.13.1",
+    "flow-bin": "^0.41.0",
     "mocha": "^3.2.0",
     "rollup": "^0.41.4",
     "rollup-plugin-babel": "^2.7.1",
