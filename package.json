@@ -28,6 +28,7 @@
     "chai": "^3.5.0",
     "custom-event-polyfill": "^0.3.0",
     "eslint": "^3.13.1",
+    "flow-bin": "^0.41.0",
     "mocha": "^3.2.0",
     "rollup": "^0.41.4",
     "rollup-plugin-babel": "^2.7.1",
