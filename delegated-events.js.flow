@@ -1,5 +1,23 @@
 /* @flow */
 
+type Event = {
+  bubbles: boolean;
+  cancelable: boolean;
+  currentTarget: Element;
+  deepPath?: () => EventTarget[];
+  defaultPrevented: boolean;
+  eventPhase: number;
+  isTrusted: boolean;
+  scoped: boolean;
+  srcElement: Element;
+  target: Element;
+  timeStamp: number;
+  type: string;
+  preventDefault(): void;
+  stopImmediatePropagation(): void;
+  stopPropagation(): void;
+}
+
 type EventHandler = (event: Event) => mixed
 
 type EventListenerOptions = {
