@@ -62,14 +62,14 @@ describe('delegated event listeners', function() {
       off('test:on', 'body', observer);
     });
 
-    it('removes event observers', function() {
+    it('removes bubble event observers', function() {
       const observer = (event) => assert.fail(event);
       on('test:off', '*', observer);
       off('test:off', '*', observer);
       fire(document.body, 'test:off');
     });
 
-    it('removes delegated event observers', function() {
+    it('removes capture event observers', function() {
       const observer = (event) => assert.fail(event);
       on('test:off', '*', observer, {capture: true});
       off('test:off', '*', observer, {capture: true});
