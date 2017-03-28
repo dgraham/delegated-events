@@ -99,7 +99,7 @@ export function off(name, selector, fn, options = {}) {
 
   if (selectors.size) return;
   delete events[name];
-  document.removeEventListener(name, dispatch, false);
+  document.removeEventListener(name, dispatch, capture);
 }
 
 export function fire(target, name, detail) {
