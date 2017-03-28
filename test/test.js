@@ -69,6 +69,13 @@ describe('delegated event listeners', function() {
       fire(document.body, 'test:off');
     });
 
+    it('removes delegated event observers', function() {
+      const observer = (event) => assert.fail(event);
+      on('test:off', '*', observer, {capture: true});
+      off('test:off', '*', observer, {capture: true});
+      fire(document.body, 'test:off');
+    });
+
     it('can reregister after removing', function() {
       const [observer, trace] = spy(event => assert.ok(event));
       on('test:register', 'body', observer);
