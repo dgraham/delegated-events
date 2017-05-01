@@ -125,7 +125,7 @@ The goals of this library are to:
 
 Delegated event handling shortcuts (`on`, `off`, `fire`) are provided
 so event handlers aren't required to test for matching elements
-themselves. jQuery has great documentation on [event delegation with selectors] [jq] too.
+themselves. jQuery has great documentation on [event delegation with selectors][jq] too.
 
 [jq]: http://api.jquery.com/on/
 
@@ -199,8 +199,8 @@ input.dispatchEvent(
 - Internet Explorer 9+
 - Microsoft Edge
 
-Internet Explorer requires polyfills for [`CustomEvent`] [custom-event]
-and [`WeakMap`] [weakmap].
+Internet Explorer requires polyfills for [`CustomEvent`][custom-event]
+and [`WeakMap`][weakmap].
 
 [custom-event]: https://github.com/krambuhl/custom-event-polyfill
 [weakmap]: https://github.com/Polymer/WeakMap
