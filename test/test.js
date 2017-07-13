@@ -1,6 +1,15 @@
 import {on, off, fire} from '../delegated-events';
 
 describe('delegated event listeners', function() {
+  before(function() {
+    const container = document.createElement('div');
+    container.innerHTML = `
+      <div class="js-test-parent">
+        <div class="js-test-child"></div>
+      </div>`;
+    document.body.appendChild(container);
+  });
+
   describe('custom event dispatch', function() {
     it('fires custom events with detail', function() {
       const observer = function(event) {

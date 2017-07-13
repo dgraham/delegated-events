@@ -211,6 +211,7 @@ and [`WeakMap`][weakmap].
 npm run bootstrap
 npm test
 npm run bench
+npm run browser
 ```
 
 ## License
