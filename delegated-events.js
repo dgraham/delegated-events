@@ -2,9 +2,11 @@ import SelectorSet from 'selector-set';
 
 const bubbleEvents = {};
 const captureEvents = {};
+const dispatchMap = {};
 const propagationStopped = new WeakMap();
 const immediatePropagationStopped = new WeakMap();
 const currentTargets = new WeakMap();
+let mismatchedEventType = function() {};
 
 function before(subject, verb, fn) {
   const source = subject[verb];
@@ -54,26 +56,40 @@ function defineCurrentTarget(event) {
   Object.defineProperty(event, 'currentTarget', {get: getCurrentTarget});
 }
 
-function dispatch(event) {
-  before(event, 'stopPropagation', trackPropagation);
-  before(event, 'stopImmediatePropagation', trackImmediate);
-  defineCurrentTarget(event);
+function dispatch(expectedType) {
+  let handler = dispatchMap[expectedType];
+  if (!handler) {
+    handler = dispatchMap[expectedType] = function(event) {
+      if (event.type !== expectedType) {
+        // Microsoft Edge sometimes fires an event handler for an event whose
+        // type doesn't match the one the handler was registered for. Silence
+        // the resulting runtime exceptions, but provide an optional API for
+        // subscribing to them for debugging purposes.
+        mismatchedEventType(expectedType, event);
+        return;
+      }
+      before(event, 'stopPropagation', trackPropagation);
+      before(event, 'stopImmediatePropagation', trackImmediate);
+      defineCurrentTarget(event);
 
-  const events = event.eventPhase === 1 ? captureEvents : bubbleEvents;
-  const selectors = events[event.type];
-  const queue = matches(selectors, event.target, event.eventPhase === 1);
+      const events = event.eventPhase === 1 ? captureEvents : bubbleEvents;
+      const selectors = events[event.type];
+      const queue = matches(selectors, event.target, event.eventPhase === 1);
 
-  for (let i = 0, len1 = queue.length; i < len1; i++) {
-    if (propagationStopped.get(event)) break;
-    const matched = queue[i];
-    currentTargets.set(event, matched.node);
+      for (let i = 0, len1 = queue.length; i < len1; i++) {
+        if (propagationStopped.get(event)) break;
+        const matched = queue[i];
+        currentTargets.set(event, matched.node);
 
-    for (let j = 0, len2 = matched.observers.length; j < len2; j++) {
-      if (immediatePropagationStopped.get(event)) break;
-      matched.observers[j].data.call(matched.node, event);
-    }
+        for (let j = 0, len2 = matched.observers.length; j < len2; j++) {
+          if (immediatePropagationStopped.get(event)) break;
+          matched.observers[j].data.call(matched.node, event);
+        }
+      }
+      currentTargets.delete(event);
+    };
   }
-  currentTargets.delete(event);
+  return handler;
 }
 
 export function on(name, selector, fn, options = {}) {
@@ -84,7 +100,7 @@ export function on(name, selector, fn, options = {}) {
   if (!selectors) {
     selectors = new SelectorSet();
     events[name] = selectors;
-    document.addEventListener(name, dispatch, capture);
+    document.addEventListener(name, dispatch(name), capture);
   }
   selectors.add(selector, fn);
 }
@@ -99,7 +115,7 @@ export function off(name, selector, fn, options = {}) {
 
   if (selectors.size) return;
   delete events[name];
-  document.removeEventListener(name, dispatch, capture);
+  document.removeEventListener(name, dispatch(name), capture);
 }
 
 export function fire(target, name, detail) {
@@ -110,4 +126,8 @@ export function fire(target, name, detail) {
       detail: detail
     })
   );
+}
+
+export function onMismatchedEventType(callback) {
+  mismatchedEventType = callback;
 }
