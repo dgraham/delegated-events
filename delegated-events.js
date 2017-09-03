@@ -30,7 +30,7 @@ function matches(selectors, target, reverse) {
         queue.push(matched);
       }
     }
-  } while (node = node.parentElement);
+  } while ((node = node.parentElement));
 
   return queue;
 }
@@ -49,9 +49,9 @@ function getCurrentTarget() {
 }
 
 function defineCurrentTarget(event) {
-  const descriptor = Object.getOwnPropertyDescriptor(Event.prototype, 'currentTarget');
-  if (!descriptor) return;
-  Object.defineProperty(event, 'currentTarget', {get: getCurrentTarget});
+  if (Object.getOwnPropertyDescriptor(Event.prototype, 'currentTarget')) {
+    Object.defineProperty(event, 'currentTarget', {get: getCurrentTarget});
+  }
 }
 
 function dispatch(event) {
