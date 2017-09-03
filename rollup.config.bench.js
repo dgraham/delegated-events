@@ -2,9 +2,11 @@ import babel from 'rollup-plugin-babel';
 import nodeResolve from 'rollup-plugin-node-resolve';
 
 export default {
-  entry: 'test/bench.js',
-  dest: 'build/bench.js',
-  format: 'iife',
+  input: 'test/bench.js',
+  output: {
+    file: 'build/bench.js',
+    format: 'iife'
+  },
   plugins: [
     babel(),
     nodeResolve({jsnext: true})
