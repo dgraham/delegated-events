@@ -7,7 +7,5 @@ export default {
     format: 'amd'
   },
   external: 'selector-set',
-  plugins: [
-    babel()
-  ]
+  plugins: [babel()]
 };

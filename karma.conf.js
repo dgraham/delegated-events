@@ -10,5 +10,5 @@ module.exports = function(config) {
     browsers: ['ChromeHeadless'],
     singleRun: false,
     concurrency: Infinity
-  })
-}
+  });
+};

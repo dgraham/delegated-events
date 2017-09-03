@@ -7,8 +7,5 @@ export default {
     file: 'build/bench.js',
     format: 'iife'
   },
-  plugins: [
-    babel(),
-    nodeResolve({jsnext: true})
-  ]
+  plugins: [babel(), nodeResolve({jsnext: true})]
 };
