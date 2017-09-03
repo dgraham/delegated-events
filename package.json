@@ -1,13 +1,11 @@
 {
   "name": "delegated-events",
-  "description": "A small, fast delegated event library.",
   "version": "1.0.2",
+  "description": "A small, fast delegated event library.",
   "license": "MIT",
   "repository": "dgraham/delegated-events",
-  "homepage": "https://github.com/dgraham/delegated-events",
-  "bugs": "https://github.com/dgraham/delegated-events/issues",
   "main": "dist/delegated-events.js",
-  "jsnext:main": "delegated-events.js",
+  "module": "delegated-events.js",
   "scripts": {
     "lint": "eslint delegated-events.js test",
     "flow": "flow check",
