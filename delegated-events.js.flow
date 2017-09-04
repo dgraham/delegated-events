@@ -28,4 +28,5 @@ declare module.exports: {
   on(name: string, selector: string, handler: EventHandler, options?: EventListenerOptions): void;
   off(name: string, selector: string, handler: EventHandler, options?: EventListenerOptions): void;
   fire(target: EventTarget, name: string, detail?: any): void;
+  onMismatchedEventType((type: string, event: Event) => any): void;
 };
