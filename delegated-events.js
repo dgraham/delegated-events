@@ -55,13 +55,14 @@ function defineCurrentTarget(event) {
 }
 
 function dispatch(event) {
-  before(event, 'stopPropagation', trackPropagation);
-  before(event, 'stopImmediatePropagation', trackImmediate);
-  defineCurrentTarget(event);
-
   const events = event.eventPhase === 1 ? captureEvents : bubbleEvents;
   const selectors = events[event.type];
   const queue = matches(selectors, event.target, event.eventPhase === 1);
+  if (!queue.length) return;
+
+  before(event, 'stopPropagation', trackPropagation);
+  before(event, 'stopImmediatePropagation', trackImmediate);
+  defineCurrentTarget(event);
 
   for (let i = 0, len1 = queue.length; i < len1; i++) {
     if (propagationStopped.get(event)) break;

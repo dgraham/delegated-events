@@ -164,6 +164,23 @@ describe('delegated event listeners', function() {
       off('test:clear', 'body', observer);
     });
 
+    it('does not interfere with currentTarget', function() {
+      const [observer, trace] = spy(event => assert.ok(event.currentTarget));
+      const event = new CustomEvent('test:currentTarget', {bubbles: true});
+
+      const one = event => assert.fail(event);
+      on('test:currentTarget', '.not-body', one);
+
+      document.addEventListener('test:currentTarget', observer);
+
+      document.body.dispatchEvent(event);
+      assert.equal(trace.calls, 1);
+      assert.isNull(event.currentTarget);
+
+      off('test:currentTarget', '.not-body', one);
+      document.removeEventListener('test:currentTarget', observer);
+    });
+
     it('prevents redispatch after propagation is stopped', function() {
       const [observer, trace] = spy(event => event.stopPropagation());
       const event = new CustomEvent('test:redispatch', {bubbles: true});
