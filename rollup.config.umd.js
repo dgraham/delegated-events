@@ -5,7 +5,10 @@ export default {
   name: 'delegated-events',
   output: {
     file: 'dist/index.umd.js',
-    format: 'umd'
+    format: 'umd',
+    globals: {
+      'selector-set': 'SelectorSet'
+    }
   },
   external: 'selector-set',
   plugins: [babel()]
