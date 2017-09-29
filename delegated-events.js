@@ -104,11 +104,21 @@ export function off(name, selector, fn, options = {}) {
 }
 
 export function fire(target, name, detail) {
-  return target.dispatchEvent(
-    new CustomEvent(name, {
+  let event = null;
+
+  if (name === 'click') {
+    event = new MouseEvent(name, {
       bubbles: true,
       cancelable: true,
       detail: detail
-    })
-  );
+    });
+  } else {
+    event = new CustomEvent(name, {
+      bubbles: true,
+      cancelable: true,
+      detail: detail
+    });
+  }
+
+  return target.dispatchEvent(event);
 }
