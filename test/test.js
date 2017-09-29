@@ -51,6 +51,19 @@ describe('delegated event listeners', function() {
       assert.equal(trace.calls, 1);
       document.removeEventListener('test:event', observer);
     });
+
+    it('fires a MouseEvent when firing a click event', function() {
+      const observer = function(event) {
+        assert(event.bubbles);
+        assert(event.cancelable);
+        assert.equal(event.type, 'click');
+        assert.strictEqual(document.body, event.target);
+        assert.instanceOf(event, MouseEvent);
+      };
+      document.addEventListener('click', observer);
+      fire(document.body, 'click');
+      document.removeEventListener('click', observer);
+    });
   });
 
   describe('event observer registration', function() {
