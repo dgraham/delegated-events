@@ -12,11 +12,7 @@
     "prettier"
   ],
   "rules": {
-    "prettier/prettier": ["error", {
-      "bracketSpacing": false,
-      "singleQuote": true,
-      "trailingComma": "none"
-    }],
+    "prettier/prettier": 2,
     "camelcase": 2,
     "no-cond-assign": 0,
     "no-else-return": 2,
