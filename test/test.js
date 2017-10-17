@@ -164,7 +164,28 @@ describe('delegated event listeners', function() {
       off('test:clear', 'body', observer);
     });
 
-    it('does not interfere with currentTarget', function() {
+    it('does not interfere with currentTarget when selectors match', function() {
+      const [observer, trace] = spy(event =>
+        assert.strictEqual(document.body, event.currentTarget)
+      );
+      const [observer2, trace2] = spy(event =>
+        assert.strictEqual(this.parent, event.currentTarget)
+      );
+      const event = new CustomEvent('test:target:capture', {bubbles: true});
+
+      on('test:target:capture', 'body', observer, {capture: true});
+      this.parent.addEventListener('test:target:capture', observer2);
+
+      this.child.dispatchEvent(event);
+      assert.equal(trace.calls, 1);
+      assert.equal(trace2.calls, 1);
+      assert.isNull(event.currentTarget);
+
+      off('test:target:capture', 'body', observer, {capture: true});
+      this.parent.removeEventListener('test:target:capture', observer2);
+    });
+
+    it('does not interfere with currentTarget when no selectors match', function() {
       const [observer, trace] = spy(event => assert.ok(event.currentTarget));
       const event = new CustomEvent('test:currentTarget', {bubbles: true});
 
