@@ -5,6 +5,10 @@ const captureEvents = {};
 const propagationStopped = new WeakMap();
 const immediatePropagationStopped = new WeakMap();
 const currentTargets = new WeakMap();
+const currentTargetDesc = Object.getOwnPropertyDescriptor(
+  Event.prototype,
+  'currentTarget'
+);
 
 function before(subject, verb, fn) {
   const source = subject[verb];
@@ -48,9 +52,9 @@ function getCurrentTarget() {
   return currentTargets.get(this) || null;
 }
 
-function defineCurrentTarget(event) {
-  if (Object.getOwnPropertyDescriptor(Event.prototype, 'currentTarget')) {
-    Object.defineProperty(event, 'currentTarget', {get: getCurrentTarget});
+function defineCurrentTarget(event, descriptor) {
+  if (currentTargetDesc) {
+    Object.defineProperty(event, 'currentTarget', descriptor);
   }
 }
 
@@ -62,7 +66,11 @@ function dispatch(event) {
 
   before(event, 'stopPropagation', trackPropagation);
   before(event, 'stopImmediatePropagation', trackImmediate);
-  defineCurrentTarget(event);
+  defineCurrentTarget(event, {
+    configurable: true,
+    enumerable: true,
+    get: getCurrentTarget
+  });
 
   for (let i = 0, len1 = queue.length; i < len1; i++) {
     if (propagationStopped.get(event)) break;
@@ -74,7 +82,9 @@ function dispatch(event) {
       matched.observers[j].data.call(matched.node, event);
     }
   }
+
   currentTargets.delete(event);
+  defineCurrentTarget(event, currentTargetDesc);
 }
 
 export function on(name, selector, fn, options = {}) {
