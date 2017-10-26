@@ -84,7 +84,11 @@ function dispatch(event) {
   }
 
   currentTargets.delete(event);
-  defineCurrentTarget(event, currentTargetDesc);
+  defineCurrentTarget(event, {
+    configurable: true,
+    enumerable: true,
+    get: currentTargetDesc.get
+  });
 }
 
 export function on(name, selector, fn, options = {}) {
