@@ -52,10 +52,14 @@ function getCurrentTarget() {
   return currentTargets.get(this) || null;
 }
 
-function defineCurrentTarget(event, descriptor) {
-  if (currentTargetDesc) {
-    Object.defineProperty(event, 'currentTarget', descriptor);
-  }
+function defineCurrentTarget(event, getter) {
+  if (!currentTargetDesc) return;
+
+  Object.defineProperty(event, 'currentTarget', {
+    configurable: true,
+    enumerable: true,
+    get: getter || currentTargetDesc.get
+  });
 }
 
 function dispatch(event) {
@@ -66,11 +70,7 @@ function dispatch(event) {
 
   before(event, 'stopPropagation', trackPropagation);
   before(event, 'stopImmediatePropagation', trackImmediate);
-  defineCurrentTarget(event, {
-    configurable: true,
-    enumerable: true,
-    get: getCurrentTarget
-  });
+  defineCurrentTarget(event, getCurrentTarget);
 
   for (let i = 0, len1 = queue.length; i < len1; i++) {
     if (propagationStopped.get(event)) break;
@@ -84,11 +84,7 @@ function dispatch(event) {
   }
 
   currentTargets.delete(event);
-  defineCurrentTarget(event, {
-    configurable: true,
-    enumerable: true,
-    get: currentTargetDesc.get
-  });
+  defineCurrentTarget(event);
 }
 
 export function on(name, selector, fn, options = {}) {
