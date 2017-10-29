@@ -160,7 +160,7 @@ describe('delegated event listeners', function() {
       on('test:clear', 'body', observer);
       document.body.dispatchEvent(event);
       assert.equal(trace.calls, 1);
-      assert.isNull(event.currentTarget);
+      assert.equal(event.currentTarget, null);
       off('test:clear', 'body', observer);
     });
 
@@ -179,7 +179,7 @@ describe('delegated event listeners', function() {
       this.child.dispatchEvent(event);
       assert.equal(trace.calls, 1);
       assert.equal(trace2.calls, 1);
-      assert.isNull(event.currentTarget);
+      assert.equal(event.currentTarget, null);
 
       off('test:target:capture', 'body', observer, {capture: true});
       this.parent.removeEventListener('test:target:capture', observer2);
@@ -196,7 +196,7 @@ describe('delegated event listeners', function() {
 
       document.body.dispatchEvent(event);
       assert.equal(trace.calls, 1);
-      assert.isNull(event.currentTarget);
+      assert.equal(event.currentTarget, null);
 
       off('test:currentTarget', '.not-body', one);
       document.removeEventListener('test:currentTarget', observer);
