@@ -64,7 +64,10 @@ function defineCurrentTarget(event, getter) {
 
 function dispatch(event) {
   const events = event.eventPhase === 1 ? captureEvents : bubbleEvents;
+
   const selectors = events[event.type];
+  if (!selectors) return;
+
   const queue = matches(selectors, event.target, event.eventPhase === 1);
   if (!queue.length) return;
 
