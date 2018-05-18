@@ -1,31 +1,28 @@
 /* @flow */
+/* eslint-disable no-unused-vars, no-undef */
 
-type Event = {
-  bubbles: boolean;
-  cancelable: boolean;
-  currentTarget: Element;
-  deepPath?: () => EventTarget[];
-  defaultPrevented: boolean;
-  eventPhase: number;
-  isTrusted: boolean;
-  scoped: boolean;
-  srcElement: Element;
-  target: Element;
-  timeStamp: number;
-  type: string;
-  preventDefault(): void;
-  stopImmediatePropagation(): void;
-  stopPropagation(): void;
+// We need to create the `BaseDelegated*Event` types to `any` out the `currentTarget` and `target`
+declare class BaseDelegatedEvent extends Event {
+  currentTarget: any;
+  target: any;
 }
 
-type EventHandler = (event: Event) => mixed
+// The `Delegated*Event` types extend from their respective `BaseDelegated*Event` types,
+// but set `currentTarget` and `target` back to sensible values
+declare class DelegatedEvent extends BaseDelegatedEvent {
+  currentTarget: Element;
+  target: Element;
+}
 
-type EventListenerOptions = {
-  capture?: boolean
-};
+declare type DelegateEventCall = (
+  name: string,
+  selector: string,
+  handler: (event: DelegatedEvent) => mixed,
+  options?: EventListenerOptionsOrUseCapture
+) => void;
 
 declare module.exports: {
-  on(name: string, selector: string, handler: EventHandler, options?: EventListenerOptions): void;
-  off(name: string, selector: string, handler: EventHandler, options?: EventListenerOptions): void;
-  fire(target: EventTarget, name: string, detail?: any): void;
+  on: DelegateEventCall,
+  off: DelegateEventCall,
+  fire(target: EventTarget, name: string, detail?: any): void
 };
