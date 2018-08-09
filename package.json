@@ -1,6 +1,6 @@
 {
   "name": "delegated-events",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A small, fast delegated event library.",
   "license": "MIT",
   "repository": "dgraham/delegated-events",
