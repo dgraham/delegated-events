@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 /* eslint-disable no-unused-vars, no-undef */
 
 // We need to create the `BaseDelegated*Event` types to `any` out the `currentTarget` and `target`

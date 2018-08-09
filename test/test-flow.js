@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import {on, off, fire} from '../delegated-events';
 
