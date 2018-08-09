@@ -126,7 +126,7 @@ import {on, off} from '../delegated-events';
 
     results = results
       .map(function(result, ix) {
-        const percent = 100 * result.value / max.value;
+        const percent = (100 * result.value) / max.value;
         return {
           name: result.name,
           value: result.value,
