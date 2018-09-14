@@ -199,11 +199,11 @@ input.dispatchEvent(
 - Internet Explorer 9+
 - Microsoft Edge
 
-Internet Explorer requires polyfills for [`CustomEvent`][custom-event]
+Old browsers require polyfills for [`CustomEvent`][custom-event]
 and [`WeakMap`][weakmap].
 
 [custom-event]: https://github.com/krambuhl/custom-event-polyfill
-[weakmap]: https://github.com/Polymer/WeakMap
+[weakmap]: https://github.com/polygonplanet/weakmap-polyfill
 
 ## Development
 
