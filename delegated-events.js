@@ -92,19 +92,21 @@ function dispatch(event) {
 
 export function on(name, selector, fn, options = {}) {
   const capture = options.capture ? true : false;
+  const doc = options.document || document;
   const events = capture ? captureEvents : bubbleEvents;
 
   let selectors = events[name];
   if (!selectors) {
     selectors = new SelectorSet();
     events[name] = selectors;
-    document.addEventListener(name, dispatch, capture);
+    doc.addEventListener(name, dispatch, capture);
   }
   selectors.add(selector, fn);
 }
 
 export function off(name, selector, fn, options = {}) {
   const capture = options.capture ? true : false;
+  const doc = options.document || document;
   const events = capture ? captureEvents : bubbleEvents;
 
   const selectors = events[name];
@@ -113,7 +115,7 @@ export function off(name, selector, fn, options = {}) {
 
   if (selectors.size) return;
   delete events[name];
-  document.removeEventListener(name, dispatch, capture);
+  doc.removeEventListener(name, dispatch, capture);
 }
 
 export function fire(target, name, detail) {
