@@ -27,5 +27,5 @@ type EventListenerOptions = {
 declare module.exports: {
   on(name: string, selector: string, handler: EventHandler, options?: EventListenerOptions): void;
   off(name: string, selector: string, handler: EventHandler, options?: EventListenerOptions): void;
-  fire(target: EventTarget, name: string, detail?: any): void;
+  fire(target: EventTarget, name: string, detail?: any): boolean;
 };
