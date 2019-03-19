@@ -18,14 +18,26 @@ type Event = {
   stopPropagation(): void;
 }
 
-type EventHandler = (event: Event) => mixed
+type EventListener = (event: Event) => mixed
 
 type EventListenerOptions = {
   capture?: boolean
 };
 
 declare module.exports: {
-  on(name: string, selector: string, handler: EventHandler, options?: EventListenerOptions): void;
-  off(name: string, selector: string, handler: EventHandler, options?: EventListenerOptions): void;
-  fire(target: EventTarget, name: string, detail?: any): boolean;
+  on(
+    element: Element | Document,
+    type: string,
+    selector: string,
+    listener: EventListener,
+    options?: boolean | EventListenerOptions
+  ): void;
+  off(
+    element: Element | Document,
+    type: string,
+    selector?: string,
+    listener?: EventListener,
+    options?: boolean | EventListenerOptions
+  ): void;
+  fire(target: EventTarget, type: string, detail?: any): boolean;
 };

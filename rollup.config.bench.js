@@ -1,11 +1,16 @@
-import babel from 'rollup-plugin-babel';
-import nodeResolve from 'rollup-plugin-node-resolve';
+import tslint from 'rollup-plugin-tslint';
+import resolve from 'rollup-plugin-node-resolve';
+import typescript from 'rollup-plugin-typescript2';
 
 export default {
-  input: 'test/bench.js',
+  input: 'test/bench.ts',
   output: {
     file: 'build/bench.js',
-    format: 'iife'
+    format: 'cjs'
   },
-  plugins: [babel(), nodeResolve({jsnext: true})]
+  plugins: [
+    tslint(),
+    resolve({ browser: true }),
+    typescript(),
+  ]
 };

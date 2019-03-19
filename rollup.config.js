@@ -1,7 +1,8 @@
-import babel from 'rollup-plugin-babel';
+import typescript from 'rollup-plugin-typescript2';
+import tslint from 'rollup-plugin-tslint';
 
 export default {
-  input: 'delegated-events.js',
+  input: 'delegated-events.ts',
   output: [
     {
       file: 'dist/index.esm.js',
@@ -17,5 +18,16 @@ export default {
     }
   ],
   external: 'selector-set',
-  plugins: [babel()]
+  plugins: [
+    tslint(),
+    typescript({
+      useTsconfigDeclarationDir: true,
+      tsconfigOverride: {
+        compilerOptions: {
+          declaration: true,
+          declarationDir: './types',
+        },
+      },
+    }),
+  ]
 };
