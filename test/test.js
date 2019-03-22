@@ -66,32 +66,32 @@ describe('delegated event listeners', function() {
         assert.strictEqual(this, event.currentTarget);
         assert.instanceOf(event, CustomEvent);
       };
-      on('test:on', 'body', observer);
+      on(document, 'test:on', 'body', observer);
       fire(document.body, 'test:on', {id: 42, login: 'hubot'});
-      off('test:on', 'body', observer);
+      off(document, 'test:on', 'body', observer);
     });
 
     it('removes bubble event observers', function() {
       const observer = event => assert.fail(event);
-      on('test:off', '*', observer);
-      off('test:off', '*', observer);
+      on(document, 'test:off', '*', observer);
+      off(document, 'test:off', '*', observer);
       fire(document.body, 'test:off');
     });
 
     it('removes capture event observers', function() {
       const observer = event => assert.fail(event);
-      on('test:off', '*', observer, {capture: true});
-      off('test:off', '*', observer, {capture: true});
+      on(document, 'test:off', '*', observer, {capture: true});
+      off(document, 'test:off', '*', observer, {capture: true});
       fire(document.body, 'test:off');
     });
 
     it('can reregister after removing', function() {
       const [observer, trace] = spy(event => assert.ok(event));
-      on('test:register', 'body', observer);
-      off('test:register', 'body', observer);
-      on('test:register', 'body', observer);
+      on(document, 'test:register', 'body', observer);
+      off(document, 'test:register', 'body', observer);
+      on(document, 'test:register', 'body', observer);
       fire(document.body, 'test:register');
-      off('test:register', 'body', observer);
+      off(document, 'test:register', 'body', observer);
       assert.equal(trace.calls, 1);
     });
   });
@@ -140,15 +140,15 @@ describe('delegated event listeners', function() {
         order.push(4);
       };
 
-      on('test:order', '.js-test-parent', one, {capture: true});
-      on('test:order', '.js-test-child', two, {capture: true});
-      on('test:order', '.js-test-parent', three);
-      on('test:order', '.js-test-child', four);
+      on(document, 'test:order', '.js-test-parent', one, {capture: true});
+      on(document, 'test:order', '.js-test-child', two, {capture: true});
+      on(document, 'test:order', '.js-test-parent', three);
+      on(document, 'test:order', '.js-test-child', four);
       fire(this.child, 'test:order');
-      off('test:order', '.js-test-parent', one, {capture: true});
-      off('test:order', '.js-test-child', two, {capture: true});
-      off('test:order', '.js-test-parent', three);
-      off('test:order', '.js-test-child', four);
+      off(document, 'test:order', '.js-test-parent', one, {capture: true});
+      off(document, 'test:order', '.js-test-child', two, {capture: true});
+      off(document, 'test:order', '.js-test-parent', three);
+      off(document, 'test:order', '.js-test-child', four);
 
       assert.deepEqual([1, 2, 4, 3], order);
     });
@@ -157,11 +157,11 @@ describe('delegated event listeners', function() {
       const [observer, trace] = spy(event => assert.ok(event.currentTarget));
       const event = new CustomEvent('test:clear', {bubbles: true});
 
-      on('test:clear', 'body', observer);
+      on(document, 'test:clear', 'body', observer);
       document.body.dispatchEvent(event);
       assert.equal(trace.calls, 1);
       assert.equal(event.currentTarget, null);
-      off('test:clear', 'body', observer);
+      off(document, 'test:clear', 'body', observer);
     });
 
     it('does not interfere with currentTarget when selectors match', function() {
@@ -173,7 +173,7 @@ describe('delegated event listeners', function() {
       );
       const event = new CustomEvent('test:target:capture', {bubbles: true});
 
-      on('test:target:capture', 'body', observer, {capture: true});
+      on(document, 'test:target:capture', 'body', observer, {capture: true});
       this.parent.addEventListener('test:target:capture', observer2);
 
       this.child.dispatchEvent(event);
@@ -181,7 +181,7 @@ describe('delegated event listeners', function() {
       assert.equal(trace2.calls, 1);
       assert.equal(event.currentTarget, null);
 
-      off('test:target:capture', 'body', observer, {capture: true});
+      off(document, 'test:target:capture', 'body', observer, {capture: true});
       this.parent.removeEventListener('test:target:capture', observer2);
     });
 
@@ -190,7 +190,7 @@ describe('delegated event listeners', function() {
       const event = new CustomEvent('test:currentTarget', {bubbles: true});
 
       const one = event => assert.fail(event);
-      on('test:currentTarget', '.not-body', one);
+      on(document, 'test:currentTarget', '.not-body', one);
 
       document.addEventListener('test:currentTarget', observer);
 
@@ -198,7 +198,7 @@ describe('delegated event listeners', function() {
       assert.equal(trace.calls, 1);
       assert.equal(event.currentTarget, null);
 
-      off('test:currentTarget', '.not-body', one);
+      off(document, 'test:currentTarget', '.not-body', one);
       document.removeEventListener('test:currentTarget', observer);
     });
 
@@ -206,7 +206,7 @@ describe('delegated event listeners', function() {
       const [observer, trace] = spy(event => event.stopPropagation());
       const event = new CustomEvent('test:redispatch', {bubbles: true});
 
-      on('test:redispatch', 'body', observer);
+      on(document, 'test:redispatch', 'body', observer);
 
       document.body.dispatchEvent(event);
       assert.equal(trace.calls, 1);
@@ -214,37 +214,37 @@ describe('delegated event listeners', function() {
       document.body.dispatchEvent(event);
       assert.equal(trace.calls, 1);
 
-      off('test:redispatch', 'body', observer);
+      off(document, 'test:redispatch', 'body', observer);
     });
 
     it('stops propagation bubbling to parent', function() {
       const one = event => assert.fail(event);
       const two = event => event.stopPropagation();
-      on('test:bubble', '.js-test-parent', one);
-      on('test:bubble', '.js-test-child', two);
+      on(document, 'test:bubble', '.js-test-parent', one);
+      on(document, 'test:bubble', '.js-test-child', two);
       fire(this.child, 'test:bubble');
-      off('test:bubble', '.js-test-parent', one);
-      off('test:bubble', '.js-test-child', two);
+      off(document, 'test:bubble', '.js-test-parent', one);
+      off(document, 'test:bubble', '.js-test-child', two);
     });
 
     it('stops immediate propagation', function() {
       const one = event => event.stopImmediatePropagation();
       const two = event => assert.fail(event);
-      on('test:immediate', '.js-test-child', one);
-      on('test:immediate', '.js-test-child', two);
+      on(document, 'test:immediate', '.js-test-child', one);
+      on(document, 'test:immediate', '.js-test-child', two);
       fire(this.child, 'test:immediate');
-      off('test:immediate', '.js-test-child', one);
-      off('test:immediate', '.js-test-child', two);
+      off(document, 'test:immediate', '.js-test-child', one);
+      off(document, 'test:immediate', '.js-test-child', two);
     });
 
     it('stops immediate propagation and bubbling', function() {
       const one = event => assert.fail(event);
       const two = event => event.stopImmediatePropagation();
-      on('test:stop', '.js-test-parent', one);
-      on('test:stop', '.js-test-child', two);
+      on(document, 'test:stop', '.js-test-parent', one);
+      on(document, 'test:stop', '.js-test-child', two);
       fire(this.child, 'test:stop');
-      off('test:stop', '.js-test-parent', one);
-      off('test:stop', '.js-test-child', two);
+      off(document, 'test:stop', '.js-test-parent', one);
+      off(document, 'test:stop', '.js-test-child', two);
     });
 
     it('calculates selector matches before dispatching event', function() {
@@ -258,11 +258,11 @@ describe('delegated event listeners', function() {
 
       const two = event => assert.fail(event);
 
-      on('test:match', '.js-test-child.inactive', one);
-      on('test:match', '.js-test-child.active', two);
+      on(document, 'test:match', '.js-test-child.inactive', one);
+      on(document, 'test:match', '.js-test-child.active', two);
       fire(this.child, 'test:match');
-      off('test:match', '.js-test-child.inactive', one);
-      off('test:match', '.js-test-child.active', two);
+      off(document, 'test:match', '.js-test-child.inactive', one);
+      off(document, 'test:match', '.js-test-child.active', two);
 
       this.child.classList.remove('active');
     });

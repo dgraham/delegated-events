@@ -53,10 +53,10 @@ import {on, off} from '../delegated-events';
     return {
       name: 'delegated',
       on: function(selector) {
-        on('test:bench', selector, handler);
+        on(document, 'test:bench', selector, handler);
       },
       off: function(selector) {
-        off('test:bench', selector, handler);
+        off(document, 'test:bench', selector, handler);
       }
     };
   }
