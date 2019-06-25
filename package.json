@@ -6,6 +6,7 @@
   "repository": "dgraham/delegated-events",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
+  "types": "index.d.ts",
   "scripts": {
     "clean": "rm -rf build dist",
     "flow": "flow check",
@@ -44,6 +45,7 @@
     "rollup-plugin-node-resolve": "^5.1.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "index.d.ts"
   ]
 }
