@@ -1,7 +1,6 @@
 import SelectorSet from 'selector-set';
 
-const bubbleEvents = {};
-const captureEvents = {};
+const eventsPoolMap = new WeakMap();
 const propagationStopped = new WeakMap();
 const immediatePropagationStopped = new WeakMap();
 const currentTargets = new WeakMap();
@@ -24,7 +23,7 @@ function matches(selectors, target, reverse) {
   let node = target;
 
   do {
-    if (node.nodeType !== 1) break;
+    if (node.nodeType !== Node.ELEMENT_NODE) break;
     const matches = selectors.matches(node);
     if (matches.length) {
       const matched = {node: node, observers: matches};
@@ -63,12 +62,14 @@ function defineCurrentTarget(event, getter) {
 }
 
 function dispatch(event) {
-  const events = event.eventPhase === 1 ? captureEvents : bubbleEvents;
+  const eventsPool = eventsPoolMap.get(event.currentTarget);
+  const capture = event.eventPhase === Event.CAPTURING_PHASE;
+  const events = capture ? eventsPool.captureEvents : eventsPool.bubbleEvents;
 
   const selectors = events[event.type];
   if (!selectors) return;
 
-  const queue = matches(selectors, event.target, event.eventPhase === 1);
+  const queue = matches(selectors, event.target, capture);
   if (!queue.length) return;
 
   before(event, 'stopPropagation', trackPropagation);
@@ -76,12 +77,12 @@ function dispatch(event) {
   defineCurrentTarget(event, getCurrentTarget);
 
   for (let i = 0, len1 = queue.length; i < len1; i++) {
-    if (propagationStopped.get(event)) break;
+    if (propagationStopped.has(event)) break;
     const matched = queue[i];
     currentTargets.set(event, matched.node);
 
     for (let j = 0, len2 = matched.observers.length; j < len2; j++) {
-      if (immediatePropagationStopped.get(event)) break;
+      if (immediatePropagationStopped.has(event)) break;
       matched.observers[j].data.call(matched.node, event);
     }
   }
@@ -90,32 +91,71 @@ function dispatch(event) {
   defineCurrentTarget(event);
 }
 
-export function on(name, selector, fn, options = {}) {
-  const capture = options.capture ? true : false;
-  const events = capture ? captureEvents : bubbleEvents;
+/**
+ * @param {Element | Document} element — host element
+ * @param {string} name — event type
+ * @param {string} selector
+ * @param {EventListener} fn
+ * @param {boolean | AddEventListenerOptions} [options]
+ */
+export function on(element, name, selector, fn, options = {}) {
+  let eventsPool = eventsPoolMap.get(element);
+  if (!eventsPool) {
+    eventsPool = {
+      bubbleEvents: {},
+      captureEvents: {}
+    };
+    eventsPoolMap.set(element, eventsPool);
+  }
+
+  const capture = typeof options === 'boolean' ? options : options.capture;
+  const events = capture ? eventsPool.captureEvents : eventsPool.bubbleEvents;
 
   let selectors = events[name];
   if (!selectors) {
     selectors = new SelectorSet();
     events[name] = selectors;
-    document.addEventListener(name, dispatch, capture);
+    element.addEventListener(name, dispatch, capture);
   }
   selectors.add(selector, fn);
 }
 
-export function off(name, selector, fn, options = {}) {
-  const capture = options.capture ? true : false;
-  const events = capture ? captureEvents : bubbleEvents;
+/**
+ * @param {Element | Document} element — host element
+ * @param {string} name — event type
+ * @param {string} [selector]
+ * @param {EventListener} [fn]
+ * @param {boolean | AddEventListenerOptions} [options]
+ */
+export function off(element, name, selector, fn, options = {}) {
+  const eventsPool = eventsPoolMap.get(element);
+  if (!eventsPool) return;
+
+  const capture = typeof options === 'boolean' ? options : options.capture;
+  const events = capture ? eventsPool.captureEvents : eventsPool.bubbleEvents;
 
   const selectors = events[name];
   if (!selectors) return;
-  selectors.remove(selector, fn);
 
-  if (selectors.size) return;
+  if (selector) {
+    if (fn) {
+      selectors.remove(selector, fn);
+    } else {
+      selectors.remove(selector);
+    }
+
+    if (selectors.size) return;
+  }
+
   delete events[name];
-  document.removeEventListener(name, dispatch, capture);
+  element.removeEventListener(name, dispatch, capture);
 }
 
+/**
+ * @param {EventTarget} target
+ * @param {string} name — event type
+ * @param {any} [detail]
+ */
 export function fire(target, name, detail) {
   return target.dispatchEvent(
     new CustomEvent(name, {

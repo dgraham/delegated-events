@@ -8,18 +8,27 @@ A small, fast delegated event library for JavaScript.
 import {on, off, fire} from 'delegated-events';
 
 // Listen for browser-generated events.
-on('click', '.js-button', function(event) {
+on(document, 'click', '.js-button', function(event) {
   console.log('clicked', this);
 });
 
 // Listen for custom events triggered by your app.
-on('robot:singularity', '.js-robot-image', function(event) {
+on(document, 'robot:singularity', '.js-robot-image', function(event) {
   console.log('robot', event.detail.name, this.src);
 });
 
 // Dispatch a custom event on an element.
 var image = document.querySelector('.js-robot-image');
 fire(image, 'robot:singularity', {name: 'Hubot'});
+
+// Stop listening for event type, selector and handler.
+off(document, 'click', '.js-button', clickHandler);
+
+// Stop listening for event type and selector.
+off(document, 'robot:singularity', '.js-robot-image');
+
+// Stop listening for event type for all selectors.
+off(document, 'robot:singularity');
 ```
 
 ## Directly-bound events
@@ -133,7 +142,7 @@ Here's the same globally delegated handler as above but using `on`.
 
 ```js
 // Easy :)
-on('click', '.js-button', function(event) {
+on(document, 'click', '.js-button', function(event) {
   console.log('clicked', event.target);
 });
 ```
@@ -164,7 +173,7 @@ A `fire` shortcut function is provided to trigger custom events with
 attached data objects.
 
 ```js
-on('validation:success', '.js-comment-input', function(event) {
+on(document, 'validation:success', '.js-comment-input', function(event) {
   console.log('succeeded for', event.detail.login);
 });
 
