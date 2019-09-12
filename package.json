@@ -10,11 +10,12 @@
   "scripts": {
     "clean": "rm -rf build dist",
     "flow": "flow check",
+    "ts": "tsc --noEmit test/test-ts.ts",
     "lint": "eslint delegated-events.js test",
     "bootstrap": "git submodule update --init && npm install",
-    "prebuild": "npm run clean && npm run flow && npm run lint",
+    "prebuild": "npm run clean && npm run flow && npm run ts && npm run lint",
     "build": "rollup -c && cp delegated-events.js.flow dist/index.esm.js.flow && cp delegated-events.js.flow dist/index.umd.js.flow",
-    "pretest": "npm run clean && npm run flow && npm run lint && rollup -c rollup.config.test.js",
+    "pretest": "npm run clean && npm run flow && npm run ts && npm run lint && rollup -c rollup.config.test.js",
     "test": "karma start --single-run --browsers ChromeHeadless karma.conf.js",
     "prebrowser": "npm run pretest",
     "browser": "open \"file://$(pwd)/test/test.html\"",
@@ -42,7 +43,8 @@
     "prettier": "^1.18.2",
     "rollup": "^1.20.3",
     "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-node-resolve": "^5.2.0"
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "typescript": "^3.6.3"
   },
   "files": [
     "dist",
