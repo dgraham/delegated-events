@@ -111,6 +111,7 @@ import {on, off} from '../delegated-events';
         new CustomEvent('test:bench', {
           bubbles: true,
           cancelable: true,
+          composed: true,
           detail: {index: i}
         })
       );

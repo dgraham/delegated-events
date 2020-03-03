@@ -3,6 +3,7 @@
 type Event = {
   bubbles: boolean;
   cancelable: boolean;
+  composed: boolean;
   currentTarget: Element;
   deepPath?: () => EventTarget[];
   defaultPrevented: boolean;
