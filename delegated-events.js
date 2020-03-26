@@ -12,7 +12,7 @@ const currentTargetDesc = Object.getOwnPropertyDescriptor(
 
 function before(subject, verb, fn) {
   const source = subject[verb];
-  subject[verb] = function() {
+  subject[verb] = function () {
     fn.apply(subject, arguments);
     return source.apply(subject, arguments);
   };

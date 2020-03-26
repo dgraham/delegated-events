@@ -1,7 +1,7 @@
 import {on, off, fire} from '../delegated-events';
 
-describe('delegated event listeners', function() {
-  before(function() {
+describe('delegated event listeners', function () {
+  before(function () {
     const container = document.createElement('div');
     container.innerHTML = `
       <div class="js-test-parent">
@@ -10,9 +10,9 @@ describe('delegated event listeners', function() {
     document.body.appendChild(container);
   });
 
-  describe('custom event dispatch', function() {
-    it('fires custom events with detail', function() {
-      const observer = function(event) {
+  describe('custom event dispatch', function () {
+    it('fires custom events with detail', function () {
+      const observer = function (event) {
         assert(event.bubbles);
         assert(event.cancelable);
         assert.equal(event.type, 'test:detail');
@@ -25,8 +25,8 @@ describe('delegated event listeners', function() {
       document.removeEventListener('test:detail', observer);
     });
 
-    it('fires custom events without detail', function() {
-      const observer = function(event) {
+    it('fires custom events without detail', function () {
+      const observer = function (event) {
         assert(event.detail === undefined || event.detail === null);
         assert.instanceOf(event, CustomEvent);
       };
@@ -35,7 +35,7 @@ describe('delegated event listeners', function() {
       document.removeEventListener('test:fire', observer);
     });
 
-    it('returns canceled when default prevented', function() {
+    it('returns canceled when default prevented', function () {
       const observer = event => event.preventDefault();
       document.addEventListener('test:cancel', observer);
       const canceled = !fire(document.body, 'test:cancel');
@@ -43,7 +43,7 @@ describe('delegated event listeners', function() {
       document.removeEventListener('test:cancel', observer);
     });
 
-    it('returns not canceled when default is not prevented', function() {
+    it('returns not canceled when default is not prevented', function () {
       const [observer, trace] = spy(event => assert.ok(event));
       document.addEventListener('test:event', observer);
       const canceled = !fire(document.body, 'test:event');
@@ -53,9 +53,9 @@ describe('delegated event listeners', function() {
     });
   });
 
-  describe('event observer registration', function() {
-    it('observes custom events', function() {
-      const observer = function(event) {
+  describe('event observer registration', function () {
+    it('observes custom events', function () {
+      const observer = function (event) {
         assert(event.bubbles);
         assert(event.cancelable);
         assert.equal(event.type, 'test:on');
@@ -71,21 +71,21 @@ describe('delegated event listeners', function() {
       off('test:on', 'body', observer);
     });
 
-    it('removes bubble event observers', function() {
+    it('removes bubble event observers', function () {
       const observer = event => assert.fail(event);
       on('test:off', '*', observer);
       off('test:off', '*', observer);
       fire(document.body, 'test:off');
     });
 
-    it('removes capture event observers', function() {
+    it('removes capture event observers', function () {
       const observer = event => assert.fail(event);
       on('test:off', '*', observer, {capture: true});
       off('test:off', '*', observer, {capture: true});
       fire(document.body, 'test:off');
     });
 
-    it('can reregister after removing', function() {
+    it('can reregister after removing', function () {
       const [observer, trace] = spy(event => assert.ok(event));
       on('test:register', 'body', observer);
       off('test:register', 'body', observer);
@@ -96,19 +96,19 @@ describe('delegated event listeners', function() {
     });
   });
 
-  describe('event propagation', function() {
-    before(function() {
+  describe('event propagation', function () {
+    before(function () {
       this.parent = document.querySelector('.js-test-parent');
       this.child = document.querySelector('.js-test-child');
     });
 
-    it('fires observers in tree order', function() {
+    it('fires observers in tree order', function () {
       const order = [];
 
       const parent = this.parent;
       const child = this.child;
 
-      const one = function(event) {
+      const one = function (event) {
         assert.strictEqual(child, event.target);
         assert.strictEqual(parent, event.currentTarget);
         assert.strictEqual(this, event.currentTarget);
@@ -116,7 +116,7 @@ describe('delegated event listeners', function() {
         order.push(1);
       };
 
-      const two = function(event) {
+      const two = function (event) {
         assert.strictEqual(child, event.target);
         assert.strictEqual(child, event.currentTarget);
         assert.strictEqual(this, event.currentTarget);
@@ -124,7 +124,7 @@ describe('delegated event listeners', function() {
         order.push(2);
       };
 
-      const three = function(event) {
+      const three = function (event) {
         assert.strictEqual(child, event.target);
         assert.strictEqual(parent, event.currentTarget);
         assert.strictEqual(this, event.currentTarget);
@@ -132,7 +132,7 @@ describe('delegated event listeners', function() {
         order.push(3);
       };
 
-      const four = function(event) {
+      const four = function (event) {
         assert.strictEqual(child, event.target);
         assert.strictEqual(child, event.currentTarget);
         assert.strictEqual(this, event.currentTarget);
@@ -153,7 +153,7 @@ describe('delegated event listeners', function() {
       assert.deepEqual([1, 2, 4, 3], order);
     });
 
-    it('clears currentTarget after propagation', function() {
+    it('clears currentTarget after propagation', function () {
       const [observer, trace] = spy(event => assert.ok(event.currentTarget));
       const event = new CustomEvent('test:clear', {bubbles: true});
 
@@ -164,7 +164,7 @@ describe('delegated event listeners', function() {
       off('test:clear', 'body', observer);
     });
 
-    it('does not interfere with currentTarget when selectors match', function() {
+    it('does not interfere with currentTarget when selectors match', function () {
       const [observer, trace] = spy(event =>
         assert.strictEqual(document.body, event.currentTarget)
       );
@@ -185,7 +185,7 @@ describe('delegated event listeners', function() {
       this.parent.removeEventListener('test:target:capture', observer2);
     });
 
-    it('does not interfere with currentTarget when no selectors match', function() {
+    it('does not interfere with currentTarget when no selectors match', function () {
       const [observer, trace] = spy(event => assert.ok(event.currentTarget));
       const event = new CustomEvent('test:currentTarget', {bubbles: true});
 
@@ -202,7 +202,7 @@ describe('delegated event listeners', function() {
       document.removeEventListener('test:currentTarget', observer);
     });
 
-    it('prevents redispatch after propagation is stopped', function() {
+    it('prevents redispatch after propagation is stopped', function () {
       const [observer, trace] = spy(event => event.stopPropagation());
       const event = new CustomEvent('test:redispatch', {bubbles: true});
 
@@ -217,7 +217,7 @@ describe('delegated event listeners', function() {
       off('test:redispatch', 'body', observer);
     });
 
-    it('stops propagation bubbling to parent', function() {
+    it('stops propagation bubbling to parent', function () {
       const one = event => assert.fail(event);
       const two = event => event.stopPropagation();
       on('test:bubble', '.js-test-parent', one);
@@ -227,7 +227,7 @@ describe('delegated event listeners', function() {
       off('test:bubble', '.js-test-child', two);
     });
 
-    it('stops immediate propagation', function() {
+    it('stops immediate propagation', function () {
       const one = event => event.stopImmediatePropagation();
       const two = event => assert.fail(event);
       on('test:immediate', '.js-test-child', one);
@@ -237,7 +237,7 @@ describe('delegated event listeners', function() {
       off('test:immediate', '.js-test-child', two);
     });
 
-    it('stops immediate propagation and bubbling', function() {
+    it('stops immediate propagation and bubbling', function () {
       const one = event => assert.fail(event);
       const two = event => event.stopImmediatePropagation();
       on('test:stop', '.js-test-parent', one);
@@ -247,10 +247,10 @@ describe('delegated event listeners', function() {
       off('test:stop', '.js-test-child', two);
     });
 
-    it('calculates selector matches before dispatching event', function() {
+    it('calculates selector matches before dispatching event', function () {
       this.child.classList.add('inactive');
 
-      const one = function(event) {
+      const one = function (event) {
         event.target.classList.remove('inactive');
         event.target.classList.add('active');
         assert.ok(event);
@@ -270,7 +270,7 @@ describe('delegated event listeners', function() {
 
   function spy(fn) {
     const tracker = {calls: 0};
-    const capture = function() {
+    const capture = function () {
       tracker.calls++;
       return fn.apply(this, arguments);
     };
