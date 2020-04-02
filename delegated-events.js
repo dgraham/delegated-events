@@ -62,9 +62,19 @@ function defineCurrentTarget(event, getter) {
   });
 }
 
-function dispatch(event) {
-  const events = event.eventPhase === 1 ? captureEvents : bubbleEvents;
+function canDispatch(event) {
+  try {
+    event.eventPhase;
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
 
+function dispatch(event) {
+  if (!canDispatch(event)) return;
+
+  const events = event.eventPhase === 1 ? captureEvents : bubbleEvents;
   const selectors = events[event.type];
   if (!selectors) return;
 
