@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": "dgraham/delegated-events",
   "main": "dist/index.umd.js",
-  "module": "dist/index.esm.js",
+  "module": "dist/index.js",
   "types": "index.d.ts",
   "scripts": {
     "clean": "rm -rf build dist",
@@ -14,7 +14,7 @@
     "lint": "eslint delegated-events.js test",
     "bootstrap": "git submodule update --init && npm install",
     "prebuild": "npm run clean && npm run flow && npm run ts && npm run lint",
-    "build": "rollup -c && cp delegated-events.js.flow dist/index.esm.js.flow && cp delegated-events.js.flow dist/index.umd.js.flow",
+    "build": "rollup -c && cp delegated-events.js.flow dist/index.js.flow && cp delegated-events.js.flow dist/index.umd.js.flow",
     "pretest": "npm run clean && npm run flow && npm run ts && npm run lint && rollup -c rollup.config.test.js",
     "test": "karma start --single-run --browsers ChromeHeadless karma.conf.js",
     "prebrowser": "npm run pretest",

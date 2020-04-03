@@ -4,7 +4,7 @@ export default {
   input: 'delegated-events.js',
   output: [
     {
-      file: 'dist/index.esm.js',
+      file: 'dist/index.js',
       format: 'es'
     },
     {
