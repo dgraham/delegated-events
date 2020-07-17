@@ -191,6 +191,65 @@ input.dispatchEvent(
 );
 ```
 
+## Adding TypeScript typed events
+
+If you're using TypeScript, you can maintain a list of custom event names that map to their specific types, making it easier to write type-safe code while using delegated events. Add the following snippet to a `.d.ts` file in your local project and alter the contents of `CustomEventMap` to list all the well-known events in your project:
+
+```typescript
+// events.d.ts
+interface CustomEventMap {
+  'my-event:foo': {
+    something: boolean
+  }
+  // When adding a new custom event to your code, add the event.name + event.detail type to this map!
+}
+
+// Do not change code below this line!
+type CustomDelegatedEventListener<T> = (this: Element, ev: CustomEvent<T> & {currentTarget: Element}) => any
+
+declare module 'delegated-events' {
+  export function fire<K extends keyof CustomEventMap>(target: Element, name: K, detail: CustomEventMap[K]): boolean
+  export function on<K extends keyof CustomEventMap>(
+    name: K,
+    selector: string,
+    listener: CustomDelegatedEventListener<CustomEventMap[K]>
+  ): boolean
+}
+
+declare global {
+  interface Document {
+    addEventListener<K extends keyof CustomEventMap>(
+      type: K,
+      listener: (this: Document, ev: CustomEvent<CustomEventMap[K]>) => unknown,
+      options?: boolean | AddEventListenerOptions
+    ): void
+  }
+  interface HTMLElement {
+    addEventListener<K extends keyof CustomEventMap>(
+      type: K,
+      listener: (this: Document, ev: CustomEvent<CustomEventMap[K]>) => unknown,
+      options?: boolean | AddEventListenerOptions
+    ): void
+  }
+}
+```
+
+Now TypeScript is able to type-check your events in both `delegated-events` callsites and the standard `addEventListener` callsites:
+
+```typescript
+fire(document.body, 'my-event:foo', {something: true})
+on('my-event:foo', 'body', event => {
+  event.detail.something // typescript knows this is a boolean
+})
+document.addEventListener('my-event:foo', event => {
+  event.detail.something // typescript knows this is a boolean
+})
+document.body.addEventListener('my-event:foo', event => {
+  event.detail.something // typescript knows this is a boolean
+})
+```
+
+
 ## Browser support
 
 - Chrome
