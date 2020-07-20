@@ -213,7 +213,7 @@ declare module 'delegated-events' {
     name: K,
     selector: string,
     listener: CustomDelegatedEventListener<CustomEventMap[K]>
-  ): boolean
+  ): void
 }
 
 declare global {
