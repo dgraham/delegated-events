@@ -131,6 +131,7 @@ export function fire(target, name, detail) {
     new CustomEvent(name, {
       bubbles: true,
       cancelable: true,
+      composed: true,
       detail: detail
     })
   );

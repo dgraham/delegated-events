@@ -15,6 +15,7 @@ describe('delegated event listeners', function () {
       const observer = function (event) {
         assert(event.bubbles);
         assert(event.cancelable);
+        assert(event.composed);
         assert.equal(event.type, 'test:detail');
         assert.deepEqual(event.detail, {id: 42, login: 'hubot'});
         assert.strictEqual(document.body, event.target);
@@ -58,6 +59,7 @@ describe('delegated event listeners', function () {
       const observer = function (event) {
         assert(event.bubbles);
         assert(event.cancelable);
+        assert(event.composed);
         assert.equal(event.type, 'test:on');
         assert.deepEqual({id: 42, login: 'hubot'}, event.detail);
         assert.strictEqual(document.body, event.target);
